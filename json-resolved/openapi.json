@@ -8,6 +8,1548 @@
     "url" : "https://virtserver.swaggerhub.com/teroarvola/vahvaEArchive/1.0.0",
     "description" : "SwaggerHub API Auto Mocking"
   } ],
-  "paths" : { },
-  "components" : { }
+  "paths" : {
+    "/api/v1/Cases/{caseRecno}" : {
+      "get" : {
+        "summary" : "Return single case by technical id. with Task / Record / Document metadata information. Note that Document contents still need to be fetched by GET /api/v1/documents/{documentRecno}",
+        "parameters" : [ {
+          "name" : "caseRecno",
+          "in" : "path",
+          "description" : "Case.recno of the case",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "idType",
+          "in" : "query",
+          "description" : "Type of case Id, by default vahvaRecno",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "vahvaRecno", "caseNumber", "eduskuntaId" ]
+          }
+        }, {
+          "name" : "returnClassificationScheme",
+          "in" : "query",
+          "description" : "Whether to return classification scheme or not. Defaults to false. It is assumed that the whole classification scheme is only used when archiving, in normal use classificationCode suffices.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Case requested",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Case"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "Access denied"
+          },
+          "404" : {
+            "description" : "Case does not exist"
+          },
+          "405" : {
+            "description" : "Invalid input"
+          },
+          "500" : {
+            "description" : "Error during request processing"
+          }
+        }
+      }
+    },
+    "/api/v1/Cases" : {
+      "get" : {
+        "summary" : "Return cases based on search criteria. \n",
+        "description" : "Note that this operation ONLY RETURNS CASE INFORMATION - no tasks, records or documents are returned to ensure proper performance. Further information can then be fetched by case using GET /api/v1/cases/{caseRecno}. Results are always returned in recno order, that is, by creation timestamp. By default the set is in ascending order, but parameter reverseSortOrder can be used to change the order to descending.\nThe following sanity checks are conducted on search criteria, breaking these rules will result in 405 return code with description. If effect, the API allow searching cases at maximum one year at a time, and is always limited by some contact.\n* at least one contact is required (usually the responsible organization or responsible person)\n* for any date parameter, to and from dates (if both given) may not be further than one year apart\n* for any date parameter, if to date is given alone, it may not be in the future\n",
+        "parameters" : [ {
+          "name" : "title",
+          "in" : "query",
+          "description" : "Case.Description. Returns results that match the case description (even partly). Default is empty. If given, needs to be at least 3 characters long.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "classificationCodes",
+          "in" : "query",
+          "description" : "List of Case.ToClassificationCodes. Results are filtered by given classification codes. Default is empty.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "name" : "otherId",
+          "in" : "query",
+          "description" : "OtherIds of the Case. \n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "otherIdType",
+          "in" : "query",
+          "description" : "OtherId type. Can be EduskuntaTunnus, VahvaRecno or CaseNumber. There need to be exactly as many otherId as there are otherIdType fields. \n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "role",
+          "in" : "query",
+          "description" : "Limit to contacts in this/these role(s). Defaults to empty.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AgentRole"
+            }
+          }
+        }, {
+          "name" : "contact",
+          "in" : "query",
+          "description" : "List of contact technical id:s (recno) allowed. Results are filtered by given contacts. Defaults to empty. Can be limited to certain role(s) with \"role\" parameter.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "name" : "subOrganizationOk",
+          "in" : "query",
+          "description" : "When searching with organization contacts, if set to true, then we have a hit if case's owning organizaton\nis a suborganization of a contact listed in parameter \"contact\". That is, we can search with LVM\nrecno, and all LVM sub-units would be considered a hit. In effect, this expands the list of contact\nrecnos in search criteria to all sub-organizations. Defaults to false. (NOT IMPLEMENTED)\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "caseStatus",
+          "in" : "query",
+          "description" : "List of case statuses allowed (according to coded value caseStatus). Results are filtered by given status codes.\nDefaults to empty.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          }
+        }, {
+          "name" : "modificationDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose modification timestamp is later than this timestamp. Default is empty. Date format is YYYY-MM-DD",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "modificationDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose modification timestamp is earlier than this timestamp. Default is empty. Date format is YYYY-MM-DD",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "creationDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose  creation timestamp later than this timestamp. Default is empty.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "creationDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose creation timestamp is earlier than this timestamp. Default is empty. Date format is YYYY-MM-DD",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "issuedDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose issued timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "issuedDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose issued timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "sentDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose sent timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "sentDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose sent timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "availableDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose available timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "availableDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose available timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "acquiredDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose acquired timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "acquiredDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose acquired timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "includeCaseReferences",
+          "in" : "query",
+          "description" : "Whether to include case-case references. Defaults to false. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "includeCustomMetadata",
+          "in" : "query",
+          "description" : "Whether to include custom metadata. Defaults to false. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "publicOnly",
+          "in" : "query",
+          "description" : "Whether to to return publishable information only. Defaults to false.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "returnClassificationScheme",
+          "in" : "query",
+          "description" : "Whether to return classification scheme or not. Defaults to false. It is assumed that the whole classification scheme is only used when archiving, in normal use classificationCode suffices.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Page number. Paging based on maxRows parameter below. \n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "maxRows",
+          "in" : "query",
+          "description" : "Page size. Defaults to 100. Used as LIMIT in database search. If value is less than 1 or greated than 1000, a 405 with \"The allowed values of maxRows are integer values between 1 and 1000\" message is returned.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "reverseSortOrder",
+          "in" : "query",
+          "description" : "Result set id by default ordered by recno ascending order. If true, result set will be ordered by recno descending order. By default false.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Cases requested. Note that only Case information is returned - no Task / Record / Document information is returned, although data model implies this.",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Case"
+                  }
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "unauthorized"
+          },
+          "405" : {
+            "description" : "Invalid input, such as wrong format of date-time object, unknown contact type or illegal combination of search criteria",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ErrorInfo"
+                }
+              }
+            }
+          },
+          "500" : {
+            "description" : "Error during request processing"
+          }
+        }
+      }
+    },
+    "/api/v1/Records/{recordRecno}" : {
+      "get" : {
+        "summary" : "Return single record and its document metadata by technical id. Note that document contents are not returned with this operation, they need to be fetched separate  with GET /api/v1/documents/{documentRecno}\n",
+        "parameters" : [ {
+          "name" : "recordRecno",
+          "in" : "path",
+          "description" : "Document.recno of the document",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "idType",
+          "in" : "query",
+          "description" : "Type of record Id, by default vahvaRecno",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "vahvaRecno", "vahvaDocumentNumber" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Record requested, with document metadata",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Record"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "unauthorized"
+          },
+          "404" : {
+            "description" : "Record does not exist"
+          },
+          "405" : {
+            "description" : "Invalid input"
+          },
+          "500" : {
+            "description" : "Error during request processing"
+          }
+        }
+      }
+    },
+    "/api/v1/Documents/{documentRecno}" : {
+      "get" : {
+        "summary" : "Return single document and its contents by technical id\n",
+        "parameters" : [ {
+          "name" : "documentRecno",
+          "in" : "path",
+          "description" : "Document.recno of the document",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "idType",
+          "in" : "query",
+          "description" : "Type of record Id, by default vahvaRecno",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "enum" : [ "vahvaRecno", "vahvaDocumentNumber" ]
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Document requested, with document metadata and document contents",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Document"
+                }
+              }
+            }
+          },
+          "403" : {
+            "description" : "unauthorized"
+          },
+          "404" : {
+            "description" : "Document does not exist"
+          },
+          "405" : {
+            "description" : "Invalid input"
+          },
+          "500" : {
+            "description" : "Error during request processing"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "ErrorInfo" : {
+        "type" : "object",
+        "properties" : {
+          "errors" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Error" : {
+        "type" : "object",
+        "properties" : {
+          "errorCode" : {
+            "type" : "string"
+          },
+          "errorMessage" : {
+            "type" : "string"
+          }
+        },
+        "description" : "Indicates that transaction was not completed, and the reason for this"
+      },
+      "Case" : {
+        "required" : [ "action", "agent", "classificationCode", "created", "function", "language", "nativeId", "restriction", "retentionPeriod", "retentionPeriodCalculationGrounds", "retentionReason", "status", "title" ],
+        "type" : "object",
+        "properties" : {
+          "subject" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 2.1 Aihe (Subject) as URI of the subject in e.g YSO or JUHO"
+            }
+          },
+          "created" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 2.2.1 (asian) Avattu/laadittu pvm",
+              "format" : "date-time"
+            }
+          },
+          "issued" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 2.2.2 (asian) Julkistettu pvm (NOT IMPLEMENTED)",
+              "format" : "date-time"
+            }
+          },
+          "sent" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 2.2.3 (asian) Lähetetty pvm (NOT IMPLEMENTED)",
+              "format" : "date-time"
+            }
+          },
+          "modified" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 2.2.4 (asian) Muokattu pvm",
+              "format" : "date-time"
+            }
+          },
+          "available" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 2.2.5 (asian) Saatavilla pvm (NOT IMPLEMENTED)",
+              "format" : "date-time"
+            }
+          },
+          "acquired" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 2.2.6 (asian) Vastaanotettu pvm (NOT IMPLEMENTED)",
+              "format" : "date-time"
+            }
+          },
+          "caseNumber" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.3 Identifiointitunnus, VAHVAn asianumero"
+          },
+          "nativeId" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.3 Identifiointitunnus, VAHVA case.recno"
+          },
+          "otherId" : {
+            "type" : "array",
+            "description" : "Asian tunnisteet muissa järjestelmissä",
+            "items" : {
+              "$ref" : "#/components/schemas/OtherId"
+            }
+          },
+          "language" : {
+            "type" : "array",
+            "description" : "SÄHKE2 2.4 (asian) Kieli",
+            "items" : {
+              "$ref" : "#/components/schemas/Language"
+            }
+          },
+          "description" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 5.2 (asian) Kuvaus"
+            }
+          },
+          "abstract" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 2.5.1 (asian) Tiivistelmä"
+            }
+          },
+          "restriction" : {
+            "$ref" : "#/components/schemas/RestrictionInfo"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.7 Nimike"
+          },
+          "caseFileRelation" : {
+            "type" : "array",
+            "description" : "SÄHKE2 2.10 Suhde NOT IMPLEMENTED",
+            "items" : {
+              "$ref" : "#/components/schemas/CaseFileRelation"
+            }
+          },
+          "retentionPeriod" : {
+            "type" : "integer",
+            "description" : "SÄHKE2 2.11.1 Säilytysajan pituus",
+            "format" : "int32"
+          },
+          "retentionReason" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.11.2 Säilytysajan peruste"
+          },
+          "retentionPeriodEnd" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.11.3 Säilytysajan päättymisajankohta"
+          },
+          "retentionPeriodCalculationGrounds" : {
+            "$ref" : "#/components/schemas/RetentionPeriodCalculationGrounds"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/CaseStatus"
+          },
+          "classificationCode" : {
+            "type" : "string",
+            "description" : "Shorthand of the classification code, such as \"03.02.01.01.00\""
+          },
+          "classificationScheme" : {
+            "$ref" : "#/components/schemas/ClassificationScheme"
+          },
+          "function" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.13 Tehtävä"
+          },
+          "agent" : {
+            "type" : "array",
+            "description" : "SÄHKE2 2.14 Toimija",
+            "items" : {
+              "$ref" : "#/components/schemas/Agent"
+            }
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/CaseType"
+          },
+          "finished" : {
+            "type" : "string",
+            "description" : "SÄHKE2 3.1.1 Päättymispvm (NOT IMPLEMENTED)",
+            "format" : "date"
+          },
+          "electronicNotification" : {
+            "$ref" : "#/components/schemas/ElectronicNotification"
+          },
+          "action" : {
+            "type" : "array",
+            "description" : "Asiaan liittyvät toimenpiteet",
+            "items" : {
+              "$ref" : "#/components/schemas/Action"
+            }
+          },
+          "custom" : {
+            "type" : "array",
+            "description" : "SÄHKE2 2.8 Organisaatiokohtaiset metatiedot",
+            "items" : {
+              "$ref" : "#/components/schemas/CustomMetadata"
+            }
+          }
+        }
+      },
+      "Action" : {
+        "required" : [ "agent", "created", "title", "type" ],
+        "type" : "object",
+        "properties" : {
+          "accepted" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.1.1 Hyväksytty pvm (NOT IMPLEMENTED)",
+            "format" : "date-time"
+          },
+          "issued" : {
+            "type" : "string",
+            "description" : "SÄHKE2 5.1.2 Julkistettu pvm (NOT IMPLEMENTED)",
+            "format" : "date-time"
+          },
+          "created" : {
+            "type" : "string",
+            "description" : "SÄHKE2 5.1.3 Laadittu pvm",
+            "format" : "date-time"
+          },
+          "sent" : {
+            "type" : "string",
+            "description" : "SÄHKE2 5.1.4 Lähetetty pvm (NOT IMPLEMENTED)",
+            "format" : "date-time"
+          },
+          "modified" : {
+            "type" : "string",
+            "description" : "SÄHKE2 5.1.5 Muokattu pvm",
+            "format" : "date-time"
+          },
+          "valid" : {
+            "$ref" : "#/components/schemas/TimePeriod"
+          },
+          "description" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 5.2 (toimenpiteen) Kuvaus (NOT IMPLEMENTED)"
+            }
+          },
+          "abstract" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 2.5.1 (toimenpiteen) Tiivistelmä (NOT IMPLEMENTED)"
+            }
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "SÄHKE 5.3 (toimenpiteen) Nimeke"
+          },
+          "custom" : {
+            "type" : "array",
+            "description" : "SÄHKE2 2.8 (toimenpiteen) Organisaatiokohtaiset metatiedot (NOT IMPLEMENTED)",
+            "items" : {
+              "$ref" : "#/components/schemas/CustomMetadata"
+            }
+          },
+          "agent" : {
+            "type" : "array",
+            "description" : "SÄHKE2 5.3 Toimija",
+            "items" : {
+              "$ref" : "#/components/schemas/Agent"
+            }
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/ActionType"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/ActionStatus"
+          },
+          "systemName" : {
+            "type" : "string",
+            "description" : "JHS191 6.4 Tietojärjestelmä. The name of the information system used in the action (NOT IMPLEMENTED)"
+          },
+          "record" : {
+            "type" : "array",
+            "description" : "Toimenpiteeseen liittyvät asiakirjat",
+            "items" : {
+              "$ref" : "#/components/schemas/Record"
+            }
+          }
+        },
+        "description" : "SÄHKE2 5 Toimenpide. Note that there is no separate \"Task\" entity in P360. \"Task\" is actually two pieces of custom metadata in Document object, namely \"Toimenpiteen nimeke\" (such as \"Kanslaiskirjeen vastaanottaminen\" - SÄHKE2 5.3 ) and \"Toimenpiteen tyyppi\" (such as \"06.04.07.00\" - SÄHKE2 5.6). This has a number of consequences * Each Action only has one Record * There can be multiple Actions of the same action type in Case * Some Action data is actually Record data (such as agent) * Only mandatory SÄHKE2 fields are used\n"
+      },
+      "Record" : {
+        "required" : [ "authenticity", "created", "function", "language", "nativeId", "restriction", "status", "title", "type" ],
+        "type" : "object",
+        "properties" : {
+          "subject" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 2.1 (asiakirjan) Aihe"
+            }
+          },
+          "created" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 2.2.1 (asiakirjan) Avattu/laadittu pvm",
+              "format" : "date-time"
+            }
+          },
+          "issued" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 2.2.2 (asiakirjan) Julkistettu pvm (NOT IMPLEMENTED)",
+              "format" : "date-time"
+            }
+          },
+          "sent" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 2.2.3 (asiakirjan) Lähetetty pvm (NOT IMPLEMENTED)",
+              "format" : "date-time"
+            }
+          },
+          "modified" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 2.2.4 (asiakirjan) Muokattu pvm",
+              "format" : "date-time"
+            }
+          },
+          "available" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 2.2.5 (asiakirjan) Saatavilla pvm (NOT IMPLEMENTED)",
+              "format" : "date-time"
+            }
+          },
+          "acquired" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 2.2.5 (asiakirjan) Vastaanotettu pvm (NOT IMPLEMENTED)",
+              "format" : "date-time"
+            }
+          },
+          "nativeId" : {
+            "type" : "string",
+            "description" : "SÄHKE 2.3 (asiakirjan) Identifiointitunnus, VAHVA document.recno"
+          },
+          "otherId" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/OtherId"
+            }
+          },
+          "language" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/Language"
+            }
+          },
+          "description" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 2.5 (asiakirjan) Kuvaus (NOT IMPLEMENTED)"
+            }
+          },
+          "abstract" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE 2.5.1 (asiakirjan) Tiivistelmä (NOT IMPLEMENTED)"
+            }
+          },
+          "restriction" : {
+            "$ref" : "#/components/schemas/RestrictionInfo"
+          },
+          "title" : {
+            "type" : "string",
+            "description" : "SÄHKE 2.7 (asiakirjan) Nimike"
+          },
+          "storageLocation" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.9 (asiakirjan) Sijaintipaikka"
+          },
+          "recordRelations" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/RecordRelation"
+            }
+          },
+          "retentionPeriod" : {
+            "type" : "integer",
+            "description" : "SÄHKE2 2.11.1 Säilytysajan pituus",
+            "format" : "int32"
+          },
+          "retentionReason" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.11.2 Säilytysajan peruste"
+          },
+          "retentionPeriodEnd" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.11.3 Säilytysajan päättymisajankohta"
+          },
+          "retentionPeriodCalculationGrounds" : {
+            "$ref" : "#/components/schemas/RetentionPeriodCalculationGrounds"
+          },
+          "status" : {
+            "$ref" : "#/components/schemas/DocumentStatus"
+          },
+          "function" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.13 Tehtävä"
+          },
+          "type" : {
+            "$ref" : "#/components/schemas/DocumentType"
+          },
+          "accepted" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.1.1 Hyväksytty pvm (NOT IMPLEMENTED)",
+            "format" : "date"
+          },
+          "gathered" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.1.2 Koottu pvm (NOT IMPLEMENTED)",
+            "format" : "date"
+          },
+          "valid" : {
+            "$ref" : "#/components/schemas/TimePeriod"
+          },
+          "authenticity" : {
+            "$ref" : "#/components/schemas/Authenticity"
+          },
+          "signatureDescription" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.3 Asiakirjan sähköinen allekirjoitus (NOT IMPLEMENTED)"
+          },
+          "coverage" : {
+            "$ref" : "#/components/schemas/Coverage"
+          },
+          "audience" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 4.5 Kohdeyleisö (NOT IMPLEMENTED)"
+            }
+          },
+          "source" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 4.6 Lähde (NOT IMPLEMENTED)"
+            }
+          },
+          "rights" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 4.7 Oikeudet (NOT IMPLEMENTED)"
+            }
+          },
+          "protectionClass" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 4.9 Suojeluluokka"
+            }
+          },
+          "alternativeTitle" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 4.10 Vaihtoehtoinen nimike"
+            }
+          },
+          "version" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.11 Versio"
+          },
+          "document" : {
+            "type" : "array",
+            "description" : "SÄHKE2 6.4.2 Tiedosto",
+            "items" : {
+              "$ref" : "#/components/schemas/Document"
+            }
+          },
+          "custom" : {
+            "type" : "array",
+            "description" : "SÄHKE2 2.8 (asiakirjan) Organisaatiokohtaiset metatiedot",
+            "items" : {
+              "$ref" : "#/components/schemas/CustomMetadata"
+            }
+          },
+          "agent" : {
+            "type" : "array",
+            "description" : "SÄHKE2 2.14 Toimija",
+            "items" : {
+              "$ref" : "#/components/schemas/Agent"
+            }
+          }
+        },
+        "description" : "SÄHKE2 4 Asiakirjan metatiedot"
+      },
+      "Coverage" : {
+        "type" : "object",
+        "properties" : {
+          "jurisdiction" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 4.4.1 Hallinnonala (NOT IMPLEMENTED)"
+            }
+          },
+          "spatial" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 4.4.2 Alueellinen (NOT IMPLEMENTED)"
+            }
+          },
+          "temporal" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 4.4.3 Ajallinen (NOT IMPLEMENTED)"
+            }
+          }
+        },
+        "description" : "SÄHKE2 4.4 Kattavauus (NOT IMPLEMENTED)"
+      },
+      "Authenticity" : {
+        "required" : [ "checker", "date", "description" ],
+        "type" : "object",
+        "properties" : {
+          "checker" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.2.1 Tarkastaja"
+          },
+          "date" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.2.2 Aikamääre",
+            "format" : "date"
+          },
+          "description" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.2.3 Kuvaus"
+          }
+        },
+        "description" : "SÄHKE2 4.2 Asiakirjan alkuperäisyys ja eheys todettu"
+      },
+      "TimePeriod" : {
+        "required" : [ "start" ],
+        "type" : "object",
+        "properties" : {
+          "start" : {
+            "type" : "string",
+            "description" : "Ajanjakson alku",
+            "format" : "date"
+          },
+          "end" : {
+            "type" : "string",
+            "description" : "Ajanjakon loppu",
+            "format" : "date"
+          }
+        },
+        "description" : "Ajanjakso"
+      },
+      "RecordRelation" : {
+        "type" : "object",
+        "properties" : {
+          "replaces" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.10.1 (asiakirja) Korvaa/Korvattu (NOT IMPLEMENTED)"
+          },
+          "isReplacedBy" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.10.1 (asiakirja) Korvaa/Korvattu (NOT IMPLEMENTED)"
+          },
+          "references" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.10.1 2.10.2 (asiakirja) Viittaa/On  viitattu (NOT IMPLEMENTED)"
+          },
+          "isReferencedBy" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.10.1 2.10.2 (asiakirja) Viittaa/On viitattu (NOT IMPLEMENTED)"
+          },
+          "required" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.8.1 (asiakirja) Pakollinen/Liittyy pakollisena (NOT IMPLEMENTED)"
+          },
+          "isRequired" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.8.1 (asiakirja) Pakollinen/Liittyy pakollisena (NOT IMPLEMENTED)"
+          },
+          "hasPart" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.8.2 (asiakirja) Sisältää/Kuuluu (NOT IMPLEMENTED)"
+          },
+          "isPartOf" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.8.2 (asiakirja) Sisältää/Kuuluu (NOT IMPLEMENTED)"
+          },
+          "hasFormat" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.8.3 Myöhempi formaatti/Aikaisempi formaatti (NOT IMPLEMENTED)"
+          },
+          "isFormatOf" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.8.3 Myöhempi formaatti/Aikaisempi formaatti (NOT IMPLEMENTED)"
+          },
+          "hasVersion" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.8.4 Vanhempi versio/Uudempi versio (NOT IMPLEMENTED)"
+          },
+          "isVersionOf" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.8.4 Vanhempi versio/Uudempi versio (NOT IMPLEMENTED)"
+          },
+          "hasRedaction" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.8.5 Julkinen (\"mustattu\") versio/Salassa pidettävää tietoa sisältävä versio (NOT IMPLEMENTED)"
+          },
+          "isRedactionOf" : {
+            "type" : "string",
+            "description" : "SÄHKE2 4.8.5 Julkinen (\"mustattu\") versio/Salassa pidettävää tietoa sisältävä versio (NOT IMPLEMENTED)"
+          }
+        },
+        "description" : "SÄHKE2 4.8 Suhde (NOT IMPLEMENTED)"
+      },
+      "SahkeDocument" : {
+        "required" : [ "formatName", "hashAlgorithm", "hashValue", "nativeId", "useType" ],
+        "type" : "object",
+        "properties" : {
+          "nativeId" : {
+            "type" : "string",
+            "description" : "SÄHKE2 6.4.1 Identifiointitunnus (VAHVA Document recno)"
+          },
+          "useType" : {
+            "type" : "string",
+            "description" : "useType:\n * `Arkisto` - Arkistomuoto\n * `Natiivi` - Asiakirjan alkuperäinen muoto\n * `Julkaisu` - Asiakirjan julkaisumuoto\n",
+            "enum" : [ "Arkisto", "Natiivi", "Julkaisu" ]
+          },
+          "fileName" : {
+            "type" : "string",
+            "description" : "SÄHKE2 6.4.2.1 (tiedoston) Nimi"
+          },
+          "filePath" : {
+            "type" : "string",
+            "description" : "SÄHKE2 6.4.2.2 Hakemistopolku"
+          },
+          "formatName" : {
+            "type" : "string",
+            "description" : "SÄHKE2 6.4.3.1 (formaatin) Nimi"
+          },
+          "formatVersion" : {
+            "type" : "string",
+            "description" : "SÄHKE2 6.4.3.2 (formaatin) Versio (NOT IMPLEMENTED)"
+          },
+          "mediumId" : {
+            "type" : "string",
+            "description" : "SÄHKE2 6.4.4 Median identifiointitunnus (NOT IMPLEMENTED)"
+          },
+          "hashAlgorithm" : {
+            "type" : "string",
+            "description" : "SÄHKE2 6.4.5 Eheystunnisteen algoritmi"
+          },
+          "hashValue" : {
+            "type" : "string",
+            "description" : "SÄHKE2 6.4.6 Eheystunnisteen arvo"
+          },
+          "encryption" : {
+            "type" : "string",
+            "description" : "SÄHKE2 6.4.7 Salaustapa (NOT IMPLEMENTED)"
+          }
+        },
+        "description" : "SÄHKE2 6.4.2 Tiedosto"
+      },
+      "Document" : {
+        "required" : [ "documentContents", "sahkeDocument" ],
+        "type" : "object",
+        "properties" : {
+          "sahkeDocument" : {
+            "$ref" : "#/components/schemas/SahkeDocument"
+          },
+          "documentContents" : {
+            "type" : "string",
+            "format" : "binary"
+          }
+        },
+        "description" : "SÄHKE2 6.4.2 Tiedosto + tiedoston sisältö"
+      },
+      "ElectronicNotification" : {
+        "required" : [ "acceptanceDate", "acceptanceDescription" ],
+        "type" : "object",
+        "properties" : {
+          "acceptanceDate" : {
+            "type" : "string",
+            "description" : "SÄHKE2 3.2.1 Suostumusajankohta (NOT IMPLEMENTED)",
+            "format" : "date"
+          },
+          "acceptanceDescription" : {
+            "type" : "string",
+            "description" : "SÄHKE2 3.2.2 Suostumuskuvaus (NOT IMPLEMENTED)"
+          },
+          "notificationPeriod" : {
+            "type" : "string",
+            "description" : "SÄHKE2 3.2.3 Tiedoksiantoperiodi (NOT IMPLEMENTED)"
+          },
+          "delivered" : {
+            "type" : "string",
+            "description" : "SÄHKE2 3.2.4 Tiedoksiannon hakeminen (NOT IMPLEMENTED)",
+            "format" : "date"
+          },
+          "deliveryDate" : {
+            "type" : "string",
+            "description" : "SÄHKE2 3.2.5 Muun tiedoksiannon (NOT IMPLEMENTED) lähettämispvm",
+            "format" : "date"
+          },
+          "arrivalDate" : {
+            "type" : "string",
+            "description" : "SÄHKE2 3.2.6 Muun tiedoksiannon saapumispvm (NOT IMPLEMENTED)",
+            "format" : "date"
+          }
+        },
+        "description" : "SÄHKE2 3.2 Sähköinen tiedoksianto (NOT IMPLEMENTED)"
+      },
+      "ClassificationScheme" : {
+        "type" : "object",
+        "properties" : {
+          "mainFunction" : {
+            "$ref" : "#/components/schemas/FunctionCode"
+          },
+          "functionClassifiction" : {
+            "$ref" : "#/components/schemas/ClassificationScheme_functionClassifiction"
+          }
+        }
+      },
+      "FunctionClassification" : {
+        "type" : "object",
+        "properties" : {
+          "function" : {
+            "$ref" : "#/components/schemas/FunctionCode"
+          },
+          "subFunctions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SubFunction"
+            }
+          }
+        }
+      },
+      "FunctionCode" : {
+        "type" : "object",
+        "properties" : {
+          "functionTitle" : {
+            "type" : "string",
+            "description" : "SÄHKE2 6.3.5 Nimeke"
+          },
+          "functionCode" : {
+            "type" : "string",
+            "description" : "SÄHKE2 6.3.4 Tunnus"
+          }
+        }
+      },
+      "SubFunction" : {
+        "type" : "object",
+        "properties" : {
+          "function" : {
+            "$ref" : "#/components/schemas/FunctionCode"
+          },
+          "subFunctions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SubFunction"
+            }
+          }
+        }
+      },
+      "CaseFileRelation" : {
+        "type" : "object",
+        "properties" : {
+          "replaces" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.10.1 Korvaa/Korvattu"
+          },
+          "isReplacedBy" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.10.1 Korvaa/Korvattu"
+          },
+          "references" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.10.1 2.10.2 Viittaa/On viitattu"
+          },
+          "isReferencedBy" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.10.1 2.10.2 Viittaa/On viitattu"
+          }
+        },
+        "description" : "SÄHKE2 2.10 Suhde"
+      },
+      "Agent" : {
+        "required" : [ "role" ],
+        "type" : "object",
+        "properties" : {
+          "role" : {
+            "$ref" : "#/components/schemas/AgentRole"
+          },
+          "name" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.14.2 Henkilö"
+          },
+          "corporateName" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.14.3 Yhteisö"
+          },
+          "otherId" : {
+            "$ref" : "#/components/schemas/OtherId"
+          }
+        },
+        "description" : "SÄHKE2 2.14 Toimija + laajennettu OtherId -tiedolla"
+      },
+      "CustomMetadata" : {
+        "required" : [ "name", "type", "value" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "metadata name"
+          },
+          "type" : {
+            "type" : "string",
+            "description" : "metadata type",
+            "enum" : [ "string", "integer", "date" ]
+          },
+          "value" : {
+            "type" : "string",
+            "description" : "metadata value"
+          }
+        }
+      },
+      "PublicityClass" : {
+        "type" : "string",
+        "description" : "SÄHKE2 2.6.1 Julkisuusluokka (Restriction.PublicityClass) - with addition of \"Ei-julkinen\" from JHS191.\nThe latter is used to indicate situation in which publicity is not public for some time, but will change\nto public later on (see PublicityClassChange)\n* Julkinen = Public\n* Osittain salassa pidettävä = Partly confidential\n* Salassa pidettävä = Confidential\n* Ei-julkinen = Not public for the time being, will change into public later\n",
+        "enum" : [ "Julkinen", "Osittain salassapidettävä", "Salassa pidettävä", "Ei-julkinen" ]
+      },
+      "PublicityClassChange" : {
+        "type" : "string",
+        "description" : "JHS191 7.17 Julkisuusluokan muutos - the action triggering change in publicity class. Example values from VNK\nTODO selvitä oikea koodaus esimerkkiin\n* \"Asian ratkaisu\" = triggered upon case closure\n* \"Päätöksenteko\" = triggerd upon decision\n* \"Päätöksen allekirjoitus\" = triggered when decision has been signed\n"
+      },
+      "ProtectionLevel" : {
+        "type" : "string",
+        "description" : "SÄHKE2 Metatietomalli: 2.6.5 Suojaustaso (Restriction.ProtectionLevel)\nSee [Julkisuuslaki 9§](https://www.finlex.fi/fi/laki/ajantasa/2010/20100681) \n* I = Protection level 1, unauthorized access can cause great damage to public interests\n* II = Protection level 2, unauthorized access can cause significant damage to public interests\n* III = Protection level 2, unauthorized access can cause damage to public or private interests\n* IV = Protection level 4, unauthorized access can cause some harm to public or private interests\n",
+        "enum" : [ "I", "II", "III", "IV" ]
+      },
+      "SecurityClass" : {
+        "type" : "string",
+        "description" : "SÄHKE2 2.6.6 Turvallisuusluokka (Restriction.SecurityClass)\n* Turvallisuusluokka I - TOP SECRET\n* Turvallisuusluokka II - SECRET\n* Turvallisuusluokka III - CONFIDENTIAL\n* Turvallisuusluokka IV - RESTRICTED\n* Ei turvallisuusluokiteltu - NOT CLASSIFIED\n",
+        "enum" : [ "Turvallisuusluokka I", "Turvallisuusluokka II", "Turvallisuusluokka III", "Turvallisuusluokka IV", "Ei turvallisuusluokiteltu" ]
+      },
+      "PersonalDataNature" : {
+        "type" : "string",
+        "description" : "SÄHKE2 2.6.7 Henkilötietoja. Indicates whether personal data, or possibly sensitive personal data, is involved. Coded as follows (yes, strings in Finnish)\n* \"Ei sisällä henkilötietoja\" = does not contain personal information\n* \"Sisältää henkilötietoja\" = contains personal information\n* \"Sisältää arkaluonteisia henkilötietoja\" = contains sensitive personal information\n",
+        "enum" : [ "Ei sisällä henkilötietoja", "Sisältää henkilötietoja", "Sisältää arkaluonteisia henkilötietoja" ]
+      },
+      "RetentionPeriodCalculationGrounds" : {
+        "type" : "string",
+        "description" : "JHS191 S.10 Säilytysajan laskentaperuste. Indicates what event is considered the start of retention perios calculation. Recommended codes are as follows, other codes are allowed\n* \"Asian lopullinen ratkaisu\" = calculation start when the final decision in case has been done\n* \"Säilytysjärjestelmään siirto\" = calculation starts from transfer to archiving system\n"
+      },
+      "RestrictedPerson" : {
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.6.8.1 Nimi"
+          },
+          "ssn" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.6.8.2 Henkilötunnus",
+            "format" : "hetu"
+          },
+          "electronicId" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.6.8.3 Sähköinen asiointitunnus"
+          }
+        }
+      },
+      "AccessRight" : {
+        "required" : [ "name", "role" ],
+        "type" : "object",
+        "properties" : {
+          "name" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.6.10.1 Henkilö"
+          },
+          "role" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.6.10.2 Rooli"
+          },
+          "accessRightDescription" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.6.10.3 Kuvaus"
+          }
+        }
+      },
+      "RestrictionInfo" : {
+        "required" : [ "containsPersonalData", "publicityClass" ],
+        "type" : "object",
+        "properties" : {
+          "publicityClass" : {
+            "$ref" : "#/components/schemas/PublicityClass"
+          },
+          "publicityClassChange" : {
+            "$ref" : "#/components/schemas/PublicityClassChange"
+          },
+          "securityPeriod" : {
+            "type" : "integer",
+            "description" : "SÄHKE2 2.6.2 Salassapitoaika",
+            "format" : "int32"
+          },
+          "securityPeriodEnd" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.6.3 Salassapidon päättymisajankohta",
+            "format" : "date"
+          },
+          "securityReson" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.6.4 Salasspitoperuste"
+          },
+          "securityPeriodCalculationGrounds" : {
+            "type" : "string",
+            "description" : "JHS191 5.4 Salassapidon laskentaperuste. Mandatory if not public."
+          },
+          "protectionLevel" : {
+            "$ref" : "#/components/schemas/ProtectionLevel"
+          },
+          "securityClass" : {
+            "$ref" : "#/components/schemas/SecurityClass"
+          },
+          "containsPersonalData" : {
+            "$ref" : "#/components/schemas/PersonalDataNature"
+          },
+          "persons" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/RestrictedPerson"
+            }
+          },
+          "owners" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "description" : "SÄHKE2 2.6.9 Omistaja"
+            }
+          },
+          "accessRights" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AccessRight"
+            }
+          }
+        },
+        "description" : "SÄHKE2 2.6 Käyttörajoitus"
+      },
+      "OtherId" : {
+        "type" : "object",
+        "properties" : {
+          "otherIdType" : {
+            "type" : "string",
+            "description" : "Koodiston \"otherIdType\" mukaiset vaihtoehdot. VNK-esimerkki\n* vahvaDocumentNumber\n* eduskuntaTunnus\n* vahvaContactRecno\n* hankeikkunaKohdeTunnus\n* unspecified\n"
+          },
+          "otherId" : {
+            "type" : "string"
+          }
+        }
+      },
+      "Language" : {
+        "type" : "string",
+        "description" : "SÄHKE2 2.4 Kieli, koodiston \"language\" mukaiset vaihtoehdot. VNK-esimerkki suomeksi\n* 'fi' - suomi\n* 'sv' - ruotsi\n* 'en' - englanti\n* 'fr' - ranska\n* 'de' - saksa\n* 'ru' - venäjä\n* 'bg' - bulgaria\n* 'et' - viro\n* 'es' - espanja\n* 'nl' - hollangi\n* 'ga' - irlanti\n* 'it' - italia\n* 'el' - kreikka\n* 'lv' - liettua\n* 'mt' - malta\n* 'pl' - puola\n* 'ro' - romania\n* 'sk' - slovakia\n* 'sl' - slovenia\n* 'da' - tanska\n* 'cs' - tsekki\n* 'se' - pohjois-aame\n"
+      },
+      "CaseStatus" : {
+        "type" : "string",
+        "description" : "SÄHKE2 2.12 (asian) Tila, koodiston \"caseStatus\" mukaiset vaihtoehdot. VNK-esimerkki suojmeksi\nTODO selvitä oikea koodaus esimerkkiin\n* \"Avattu\"\n* \"Vireillä\"\n* \"Valmistelussa\"\n* \"Ratkaistu\" \n* \"Toimitettu tiedoksi\"\n* \"Toimeenpantavana\" \n* \"Muutoksenhaku\"\n* \"Seurannassa\"\n* \"Päätetty\" \n* \"Avattu uudelleen\" \n* \"Siirretty\" \n* \"Hävitetty\"\n"
+      },
+      "DocumentStatus" : {
+        "type" : "string",
+        "description" : "SÄHKE2 2.12 (asiakirjan) Tila. Koodiston \"documentStatus\" mukainen kooditus. VNK-esimerkki suomeksi\nTODO selvitä oikea koodaus esimerkkiin\n* 'K' - Käsitelty\n* 'P' - Päätetty\n* 'H' - Hyväksytty\n* 'M' - Mitätöity\n* 'V' - Valmis allekirjoitettavaksi\n"
+      },
+      "ActionStatus" : {
+        "type" : "string",
+        "description" : "JHS191 6.3 Käsittelyprosessin tila. Coded value \"actionStatus\". VNK-esimerkki suomeksi\nTODO selvitä oikea koodaus esimerkkiin\n* \"Avattu\"\n* \"Vireillä\"\n* \"Valmistelussa\"\n* \"Ratkaistu\" \n* \"Toimitettu tiedoksi\"\n* \"Toimeenpantavana\" \n* \"Muutoksenhaku\"\n* \"Seurannassa\"\n* \"Päätetty\" \n* \"Avattu uudelleen\" \n* \"Siirretty\" \n* \"Hävitetty\"\n"
+      },
+      "DocumentType" : {
+        "required" : [ "typeCode" ],
+        "type" : "object",
+        "properties" : {
+          "type" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.15 (asiakirjan) Tyyppi",
+            "example" : "Kannanotto"
+          },
+          "typeSpecifier" : {
+            "type" : "string",
+            "description" : "JHS 191 asiakirjatyypin tarkenne",
+            "example" : "Neuvoteltu VM:n kanta"
+          },
+          "typeCode" : {
+            "type" : "string",
+            "description" : "dokumenttityypin koodi",
+            "example" : "09.00.00.00.06.01"
+          }
+        }
+      },
+      "ActionType" : {
+        "type" : "string",
+        "description" : "SÄHKE2 5.6 (toimenpiteen) Tyyppi. Stored in TOS. Not a coded value.\n"
+      },
+      "CaseType" : {
+        "type" : "string",
+        "description" : "SÄHKE2 2.15 (asian) Tyyppi. Koodiston \"caseType\" mukainen kooditus TODO selvitä oikea koodaus esimerkkiin\n"
+      },
+      "AgentRole" : {
+        "type" : "string",
+        "description" : "SÄHKE2 2.14.1 Rooli. Koodiston \"agentRole\" mukainen kooditus. VNK-esimerkki suomeksi\nTODO selvitä oikea koodaus\n* 'RP' - Vastuuhenkilö\n* 'RO' - Vastuuorganisaatio\n* 'SE' - Lähettäjä\n* 'RE' - Vastaanottaja\n* 'CC' - Kopio\n* 'BC' - Piilokopio\n* 'CO' - Kontakti\n* 'PA' - Osallinen\n* 'CU' - Hakija\n* ...\n"
+      },
+      "TechnicalId" : {
+        "maxLength" : 16,
+        "type" : "string",
+        "description" : "Technical ID (recno) in VAHVA"
+      },
+      "ClassificationScheme_functionClassifiction" : {
+        "type" : "object",
+        "properties" : {
+          "function" : {
+            "$ref" : "#/components/schemas/FunctionCode"
+          },
+          "subFunctions" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SubFunction"
+            }
+          }
+        }
+      }
+    }
+  }
 }
