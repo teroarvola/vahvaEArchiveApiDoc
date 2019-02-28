@@ -73,7 +73,307 @@
     "/api/v1/Cases" : {
       "get" : {
         "summary" : "Return cases based on search criteria. \n",
-        "description" : "Note that this operation ONLY RETURNS CASE INFORMATION - no tasks, records or documents are returned to ensure proper performance. Further information can then be fetched by case using GET /api/v1/cases/{caseRecno}. Results are always returned in recno order, that is, by creation timestamp. By default the set is in ascending order, but parameter reverseSortOrder can be used to change the order to descending.\nThe following sanity checks are conducted on search criteria, breaking these rules will result in 405 return code with description. If effect, the API allow searching cases at maximum one year at a time, and is always limited by some contact.\n* at least one contact is required (usually the responsible organization or responsible person)\n* for any date parameter, to and from dates (if both given) may not be further than one year apart\n* for any date parameter, if to date is given alone, it may not be in the future\nparameters:\n- name: title\n  in: query\n  description: |\n    Case.Description. Returns results that match the case description (even partly). Default is empty. If given, needs to be at least 3 characters long.\n  schema:\n    type: string\n- name: classificationCodes\n  in: query\n  description: |\n    List of Case.ToClassificationCodes. Results are filtered by given classification codes. Default is empty.\n  schema:\n    type: array\n    items:\n      type: string\n- name: otherId\n  in: query\n  description: |\n    OtherIds of the Case. \n  schema:\n    type: string\n    items:\n      type: string\n- name: otherIdType\n  in: query\n  description: |\n    OtherId type. Can be EduskuntaTunnus, VahvaRecno or CaseNumber. There need to be exactly as many otherId as there are otherIdType fields. \n  schema:\n    type: string\n    items:\n      type: string\n\n- name: role\n  in: query\n  description:  Limit to contacts in this/these role(s). Defaults to empty.\n  schema:\n    type: array\n    items:\n      $ref:  \"#/components/schemas/AgentRole\"\n- name: contact\n  in: query\n  description: |\n    List of contact technical id:s (recno) allowed. Results are filtered by given contacts. Defaults to empty. Can be limited to certain role(s) with \"role\" parameter.\n  schema:\n    type: array\n    items:\n      type: string\n- name: subOrganizationOk\n  in: query\n  description: |\n    When searching with organization contacts, if set to true, then we have a hit if case's owning organizaton\n    is a suborganization of a contact listed in parameter \"contact\". That is, we can search with LVM\n    recno, and all LVM sub-units would be considered a hit. In effect, this expands the list of contact\n    recnos in search criteria to all sub-organizations. Defaults to false. (NOT IMPLEMENTED)\n  schema:\n    type: boolean\n- name: caseStatus\n  in: query\n  description: |\n    List of case statuses allowed (according to coded value caseStatus). Results are filtered by given status codes.\n    Defaults to empty.\n  schema:\n    type: array\n    items:\n      type: array\n      items:\n        type: string\n- name: modificationDateFrom\n  in: query\n  description: Limit results to those whose modification timestamp is later than this timestamp. Default is empty. Date format is YYYY-MM-DD\n  schema:\n    type: string\n    format: date\n- name: modificationDateTo\n  in: query\n  description: Limit results to those whose modification timestamp is earlier than this timestamp. Default is empty. Date format is YYYY-MM-DD\n  schema:\n    type: string\n    format: date\n- name: creationDateFrom\n  in: query\n  description: Limit results to those whose  creation timestamp later than this timestamp. Default is empty. \n  schema:\n    type: string\n    format: date\n- name: creationDateTo\n  in: query\n  description: Limit results to those whose creation timestamp is earlier than this timestamp. Default is empty. Date format is YYYY-MM-DD\n  schema:\n    type: string\n    format: date\n- name: issuedDateFrom\n  in: query\n  description: Limit results to those whose issued timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED\n  schema:\n    type: string\n    format: date-time\n- name: issuedDateTo\n  in: query\n  description: Limit results to those whose issued timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED\n  schema:\n    type: string\n    format: date-time\n- name: sentDateFrom\n  in: query\n  description: Limit results to those whose sent timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED\n  schema:\n    type: string\n    format: date-time\n- name: sentDateTo\n  in: query\n  description: Limit results to those whose sent timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED\n  schema:\n    type: string\n    format: date-time\n- name: availableDateFrom\n  in: query\n  description: Limit results to those whose available timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED\n  schema:\n    type: string\n    format: date-time\n- name: availableDateTo\n  in: query\n  description: Limit results to those whose available timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED\n  schema:\n    type: string\n    format: date-time\n- name: acquiredDateFrom\n  in: query\n  description: Limit results to those whose acquired timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED\n  schema:\n    type: string\n    format: date-time\n- name: acquiredDateTo\n  in: query\n  description: Limit results to those whose acquired timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED\n  schema:\n    type: string\n    format: date-time\n- name: includeCaseReferences\n  in: query\n  description: Whether to include case-case references. Defaults to false. NOT IMPLEMENTED\n  schema:\n    type: boolean\n- name: includeCustomMetadata\n  in: query\n  description: Whether to include custom metadata. Defaults to false. NOT IMPLEMENTED\n  schema:\n    type: boolean\n- name: publicOnly\n  in: query\n  description: Whether to to return publishable information only. Defaults to false.\n  schema:\n    type: boolean\n- name: returnClassificationScheme\n  in: query\n  required: false\n  description: |\n    Whether to return classification scheme or not. Defaults to false. It is assumed that the whole classification scheme is only used when archiving, in normal use classificationCode suffices.\n  schema:\n    type: boolean\n- name: page\n  in: query\n  description: |\n    Page number. Paging based on maxRows parameter below. \n  schema:\n    type: integer\n- name: maxRows\n  in: query\n  description: |\n    Page size. Defaults to 100. Used as LIMIT in database search. If value is less than 1 or greated than 1000, a 405 with \"The allowed values of maxRows are integer values between 1 and 1000\" message is returned.\n  schema:\n    type: integer\n- name: reverseSortOrder\n  in: query\n  description: |\n    Result set id by default ordered by recno ascending order. If true, result set will be ordered by recno descending order. By default false.\n  schema:\n    type: boolean\n",
+        "description" : "Note that this operation ONLY RETURNS CASE INFORMATION - no tasks, records or documents are returned to ensure proper performance. Further information can then be fetched by case using GET /api/v1/cases/{caseRecno}. Results are always returned in recno order, that is, by creation timestamp. By default the set is in ascending order, but parameter reverseSortOrder can be used to change the order to descending.\nThe following sanity checks are conducted on search criteria, breaking these rules will result in 405 return code with description. If effect, the API allow searching cases at maximum one year at a time, and is always limited by some contact.\n* at least one contact is required (usually the responsible organization or responsible person)\n* for any date parameter, to and from dates (if both given) may not be further than one year apart\n* for any date parameter, if to date is given alone, it may not be in the future\n",
+        "parameters" : [ {
+          "name" : "title",
+          "in" : "query",
+          "description" : "Case.Description. Returns results that match the case description (even partly). Default is empty. If given, needs to be at least 3 characters long.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "classificationCodes",
+          "in" : "query",
+          "description" : "List of Case.ToClassificationCodes. Results are filtered by given classification codes. Default is empty.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "name" : "otherId",
+          "in" : "query",
+          "description" : "OtherIds of the Case. \n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "otherIdType",
+          "in" : "query",
+          "description" : "OtherId type. Can be EduskuntaTunnus, VahvaRecno or CaseNumber. There need to be exactly as many otherId as there are otherIdType fields. \n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "role",
+          "in" : "query",
+          "description" : "Limit to contacts in this/these role(s). Defaults to empty.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AgentRole"
+            }
+          }
+        }, {
+          "name" : "contact",
+          "in" : "query",
+          "description" : "List of contact technical id:s (recno) allowed. Results are filtered by given contacts. Defaults to empty. Can be limited to certain role(s) with \"role\" parameter.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          }
+        }, {
+          "name" : "subOrganizationOk",
+          "in" : "query",
+          "description" : "When searching with organization contacts, if set to true, then we have a hit if case's owning organizaton\nis a suborganization of a contact listed in parameter \"contact\". That is, we can search with LVM\nrecno, and all LVM sub-units would be considered a hit. In effect, this expands the list of contact\nrecnos in search criteria to all sub-organizations. Defaults to false. (NOT IMPLEMENTED)\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "caseStatus",
+          "in" : "query",
+          "description" : "List of case statuses allowed (according to coded value caseStatus). Results are filtered by given status codes.\nDefaults to empty.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "array",
+            "items" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          }
+        }, {
+          "name" : "modificationDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose modification timestamp is later than this timestamp. Default is empty. Date format is YYYY-MM-DD",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "modificationDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose modification timestamp is earlier than this timestamp. Default is empty. Date format is YYYY-MM-DD",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "creationDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose  creation timestamp later than this timestamp. Default is empty.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "creationDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose creation timestamp is earlier than this timestamp. Default is empty. Date format is YYYY-MM-DD",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "name" : "issuedDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose issued timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "issuedDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose issued timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "sentDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose sent timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "sentDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose sent timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "availableDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose available timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "availableDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose available timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "acquiredDateFrom",
+          "in" : "query",
+          "description" : "Limit results to those whose acquired timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "acquiredDateTo",
+          "in" : "query",
+          "description" : "Limit results to those whose acquired timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date-time"
+          }
+        }, {
+          "name" : "includeCaseReferences",
+          "in" : "query",
+          "description" : "Whether to include case-case references. Defaults to false. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "includeCustomMetadata",
+          "in" : "query",
+          "description" : "Whether to include custom metadata. Defaults to false. NOT IMPLEMENTED",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "publicOnly",
+          "in" : "query",
+          "description" : "Whether to to return publishable information only. Defaults to false.",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "returnClassificationScheme",
+          "in" : "query",
+          "description" : "Whether to return classification scheme or not. Defaults to false. It is assumed that the whole classification scheme is only used when archiving, in normal use classificationCode suffices.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        }, {
+          "name" : "page",
+          "in" : "query",
+          "description" : "Page number. Paging based on maxRows parameter below. \n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "maxRows",
+          "in" : "query",
+          "description" : "Page size. Defaults to 100. Used as LIMIT in database search. If value is less than 1 or greated than 1000, a 405 with \"The allowed values of maxRows are integer values between 1 and 1000\" message is returned.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        }, {
+          "name" : "reverseSortOrder",
+          "in" : "query",
+          "description" : "Result set id by default ordered by recno ascending order. If true, result set will be ordered by recno descending order. By default false.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "boolean"
+          }
+        } ],
         "responses" : {
           "200" : {
             "description" : "Cases requested. Note that only Case information is returned - no Task / Record / Document information is returned, although data model implies this.",
