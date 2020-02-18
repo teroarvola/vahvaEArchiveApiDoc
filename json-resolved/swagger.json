@@ -2,7 +2,7 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "VAHVA eArchive API",
-    "description" : "* Reviewed by team on 23/08/2019",
+    "description" : "* Reviewed by team on 23/08/2019\n## Updates\n* Marked unsupported fields as deprecated, will be removed/refined later / Tero Arvola 2020-02-12\n* Updated implementation status, removed faulty required fields / Tero Arvola 2020-02-12\n",
     "version" : "1.0.0"
   },
   "servers" : [ {
@@ -37,7 +37,7 @@
         }, {
           "name" : "returnClassificationScheme",
           "in" : "query",
-          "description" : "Whether to return classification scheme or not. Defaults to false. It is assumed that the whole classification scheme is only used when archiving, in normal use classificationCode suffices.\n",
+          "description" : "Whether to return classification scheme or not. Defaults to false. It is assumed that the whole classification scheme is only used when archiving, in normal use classificationCode suffices. NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE\n",
           "required" : false,
           "deprecated" : true,
           "style" : "form",
@@ -908,7 +908,6 @@
         "description" : "Indicates that transaction was not completed, and the reason for this"
       },
       "Case" : {
-        "required" : [ "action", "agent", "classificationCode", "created", "function", "language", "nativeId", "restriction", "retentionPeriod", "retentionPeriodCalculationGrounds", "retentionReason", "status", "title" ],
         "type" : "object",
         "properties" : {
           "subject" : {
@@ -1035,7 +1034,7 @@
           },
           "classificationCode" : {
             "type" : "string",
-            "description" : "Shorthand of the classification code, such as \"03.02.01.01.00\""
+            "description" : "Shorthand of the classification code, such as \"03.02.01.01.00\" NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE"
           },
           "classificationScheme" : {
             "$ref" : "#/components/schemas/ClassificationScheme"
@@ -1079,7 +1078,6 @@
         }
       },
       "Action" : {
-        "required" : [ "agent", "created", "title", "type" ],
         "type" : "object",
         "properties" : {
           "accepted" : {
@@ -1163,7 +1161,6 @@
         "description" : "SÄHKE2 5 Toimenpide. Note that there is no separate \"Task\" entity in P360. \"Task\" is actually two pieces of custom metadata in Document object, namely \"Toimenpiteen nimeke\" (such as \"Kanslaiskirjeen vastaanottaminen\" - SÄHKE2 5.3 ) and \"Toimenpiteen tyyppi\" (such as \"06.04.07.00\" - SÄHKE2 5.6). This has a number of consequences * Each Action only has one Record * There can be multiple Actions of the same action type in Case * Some Action data is actually Record data (such as agent) * Only mandatory SÄHKE2 fields are used\n"
       },
       "Record" : {
-        "required" : [ "authenticity", "created", "function", "language", "nativeId", "restriction", "status", "title", "type" ],
         "type" : "object",
         "properties" : {
           "subject" : {
@@ -1406,7 +1403,6 @@
         "description" : "SÄHKE2 4.4 Kattavauus (NOT IMPLEMENTED)"
       },
       "Authenticity" : {
-        "required" : [ "checker", "date", "description" ],
         "type" : "object",
         "properties" : {
           "checker" : {
@@ -1426,7 +1422,6 @@
         "description" : "SÄHKE2 4.2 Asiakirjan alkuperäisyys ja eheys todettu"
       },
       "TimePeriod" : {
-        "required" : [ "start" ],
         "type" : "object",
         "properties" : {
           "start" : {
@@ -1436,7 +1431,7 @@
           },
           "end" : {
             "type" : "string",
-            "description" : "Ajanjakon loppu",
+            "description" : "Ajanjakson loppu",
             "format" : "date"
           }
         },
@@ -1505,7 +1500,6 @@
         "description" : "SÄHKE2 4.8 Suhde (NOT IMPLEMENTED)"
       },
       "SahkeDocument" : {
-        "required" : [ "(formatVersion)", "formatName", "hashAlgorithm", "hashValue", "nativeId", "useType" ],
         "type" : "object",
         "properties" : {
           "nativeId" : {
@@ -1553,7 +1547,6 @@
         "description" : "SÄHKE2 6.4.2 Tiedosto"
       },
       "Document" : {
-        "required" : [ "documentContents", "sahkeDocument" ],
         "type" : "object",
         "properties" : {
           "sahkeDocument" : {
@@ -1593,7 +1586,6 @@
         "description" : "Keyword object"
       },
       "ElectronicNotification" : {
-        "required" : [ "acceptanceDate", "acceptanceDescription" ],
         "type" : "object",
         "properties" : {
           "acceptanceDate" : {
@@ -1628,7 +1620,6 @@
         "description" : "SÄHKE2 3.2 Sähköinen tiedoksianto (NOT IMPLEMENTED)"
       },
       "ClassificationScheme" : {
-        "required" : [ "mainFunctionCode", "mainFunctionTitle" ],
         "type" : "object",
         "properties" : {
           "mainFunction" : {
@@ -1637,7 +1628,8 @@
           "functionClassifiction" : {
             "$ref" : "#/components/schemas/ClassificationScheme_functionClassifiction"
           }
-        }
+        },
+        "description" : "NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE"
       },
       "FunctionCode" : {
         "type" : "object",
@@ -1664,7 +1656,8 @@
               "$ref" : "#/components/schemas/SubFunction"
             }
           }
-        }
+        },
+        "description" : "NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE"
       },
       "CaseFileRelation" : {
         "type" : "object",
@@ -1689,7 +1682,6 @@
         "description" : "SÄHKE2 2.10 Suhde"
       },
       "Agent" : {
-        "required" : [ "role" ],
         "type" : "object",
         "properties" : {
           "role" : {
@@ -1710,7 +1702,6 @@
         "description" : "SÄHKE2 2.14 Toimija + laajennettu OtherId -tiedolla"
       },
       "CustomMetadata" : {
-        "required" : [ "name", "type", "value" ],
         "type" : "object",
         "properties" : {
           "name" : {
@@ -1775,7 +1766,6 @@
         }
       },
       "AccessRight" : {
-        "required" : [ "name", "role" ],
         "type" : "object",
         "properties" : {
           "name" : {
@@ -1793,7 +1783,6 @@
         }
       },
       "RestrictionInfo" : {
-        "required" : [ "containsPersonalData", "publicityClass" ],
         "type" : "object",
         "properties" : {
           "publicityClass" : {
@@ -1879,7 +1868,6 @@
         "description" : "JHS191 6.3 Käsittelyprosessin tila. Coded value \"actionStatus\". VNK-esimerkki suomeksi\nTODO selvitä oikea koodaus esimerkkiin\n* \"Avattu\"\n* \"Vireillä\"\n* \"Valmistelussa\"\n* \"Ratkaistu\" \n* \"Toimitettu tiedoksi\"\n* \"Toimeenpantavana\" \n* \"Muutoksenhaku\"\n* \"Seurannassa\"\n* \"Päätetty\" \n* \"Avattu uudelleen\" \n* \"Siirretty\" \n* \"Hävitetty\"\n"
       },
       "DocumentType" : {
-        "required" : [ "typeCode" ],
         "type" : "object",
         "properties" : {
           "type" : {
