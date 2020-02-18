@@ -2,7 +2,7 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "VAHVA eArchive API",
-    "description" : "* Reviewed by team on 23/08/2019\n## Updates\n* Marked unsupported fields as deprecated, will be removed/refined later / Tero Arvola 2020-02-12\n* Updated implementation status, removed faulty required fields / Tero Arvola 2020-02-12\n",
+    "description" : "* Reviewed by team on 23/08/2019\n## Date formats\nDate format is according to SFS-EN 28601 standard, which is very similar to ISO 8601 format. The format is strictly:\n  * **yyyy-MM-ddThh:mm:sszzz**\n  * example: 2019-05-03T12:17:00+03:00\n  \n  When passing date values in URL query string you need to encode the value. **The plus sign in timezone will not work as it will interpreted as space, so you need to encode it to %2B.**\n## Updates\n* Marked unsupported fields as deprecated, will be removed/refined later / Tero Arvola 2020-02-12\n* Updated implementation status, date formats, removed faulty required fields / Tero Arvola 2020-02-18\n",
     "version" : "1.0.0"
   },
   "servers" : [ {
@@ -32,7 +32,7 @@
           "explode" : true,
           "schema" : {
             "type" : "string",
-            "enum" : [ "vahvaRecno", "caseNumber", "eduskuntaId" ]
+            "enum" : [ "vahvaRecno", "eduskuntaId (not implemented)" ]
           }
         }, {
           "name" : "returnClassificationScheme",
@@ -75,11 +75,11 @@
     "/api/v1/Cases" : {
       "get" : {
         "summary" : "Return cases based on search criteria. \n",
-        "description" : "Note that this operation ONLY RETURNS CASE INFORMATION - no tasks, records or documents are returned to ensure proper performance. Further information can then be fetched by case using GET /api/v1/cases/{caseRecno}. Results are always returned in recno order, that is, by creation timestamp. By default the set is in ascending order, but parameter reverseSortOrder can be used to change the order to descending.\nThe following sanity checks are conducted on search criteria, breaking these rules will result in 405 return code with description. If effect, the API allow searching cases at maximum one year at a time, and is always limited by some contact.\n* at least one contact is required (usually the responsible organization or responsible person)\n* for any date parameter, to and from dates (if both given) may not be further than one year apart\n* for any date parameter, if to date is given alone, it may not be in the future\n",
+        "description" : "Note that this operation ONLY RETURNS CASE INFORMATION - no tasks, records or documents are returned to ensure proper performance. Further information can then be fetched by case using GET /api/v1/cases/{caseRecno}. Results are always returned in recno order, that is, by creation timestamp. By default the set is in ascending order, but parameter reverseSortOrder can be used to change the order to descending.\nThe following sanity checks are conducted on search criteria, breaking these rules will result in 405 return code with description. If effect, the API allow searching cases at maximum one year at a time, and is always limited by some contact.\n* at least CaseNumber, Contact (usually the responsible organization or responsible person) or Ministry is required\n* for any date parameter, to and from dates (if both given) may not be further than one year apart\n* for any date parameter, if to date is given alone, it may not be in the future\n",
         "parameters" : [ {
           "name" : "title",
           "in" : "query",
-          "description" : "Case.Description. Returns results that match the case description (even partly). Default is empty. If given, needs to be at least 3 characters long.\n",
+          "description" : "Case.Description. Returns results that match the case description. Use '%' as wildcard. Default is empty. If given, needs to be at least 3 characters long.\n",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -89,7 +89,7 @@
         }, {
           "name" : "classificationCodes",
           "in" : "query",
-          "description" : "List of Case.ToClassificationCodes. Results are filtered by given classification codes. Default is empty.\n",
+          "description" : "List of Case.ToClassificationCodes. Results are filtered by given classification codes. Default is empty. NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE\n",
           "required" : false,
           "deprecated" : true,
           "style" : "form",
@@ -103,7 +103,7 @@
         }, {
           "name" : "otherId",
           "in" : "query",
-          "description" : "OtherIds of the Case. \n",
+          "description" : "OtherIds of the Case. NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE\n",
           "required" : false,
           "deprecated" : true,
           "style" : "form",
@@ -117,7 +117,7 @@
         }, {
           "name" : "otherIdType",
           "in" : "query",
-          "description" : "OtherId type. Can be EduskuntaTunnus, VahvaRecno or CaseNumber. There need to be exactly as many otherId as there are otherIdType fields. \n",
+          "description" : "OtherId type. Can be EduskuntaTunnus, VahvaRecno or CaseNumber. There need to be exactly as many otherId as there are otherIdType fields. NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE\n",
           "required" : false,
           "deprecated" : true,
           "style" : "form",
@@ -159,7 +159,7 @@
         }, {
           "name" : "subOrganizationOk",
           "in" : "query",
-          "description" : "When searching with organization contacts, if set to true, then we have a hit if case's owning organizaton\nis a suborganization of a contact listed in parameter \"contact\". That is, we can search with LVM\nrecno, and all LVM sub-units would be considered a hit. In effect, this expands the list of contact\nrecnos in search criteria to all sub-organizations. Defaults to false. (NOT IMPLEMENTED)\n",
+          "description" : "When searching with organization contacts, if set to true, then we have a hit if case's owning organizaton\nis a suborganization of a contact listed in parameter \"contact\". That is, we can search with LVM\nrecno, and all LVM sub-units would be considered a hit. In effect, this expands the list of contact\nrecnos in search criteria to all sub-organizations. Defaults to false. (NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE)\n",
           "required" : false,
           "deprecated" : true,
           "style" : "form",
@@ -170,7 +170,7 @@
         }, {
           "name" : "caseStatus",
           "in" : "query",
-          "description" : "List of case statuses allowed (according to coded value caseStatus). Results are filtered by given status codes.\nDefaults to empty.\n",
+          "description" : "List of case statuses allowed (according to coded value caseStatus). Results are filtered by given status codes.\nDefaults to empty. Note: eArchive only has closed cases (caseStatus = 18)\n",
           "required" : false,
           "deprecated" : true,
           "style" : "form",
@@ -187,7 +187,7 @@
         }, {
           "name" : "modificationDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose modification timestamp is later than this timestamp. Default is empty. Date format is YYYY-MM-DD",
+          "description" : "Limit results to those whose modification timestamp is later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded.",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -198,7 +198,7 @@
         }, {
           "name" : "modificationDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose modification timestamp is earlier than this timestamp. Default is empty. Date format is YYYY-MM-DD",
+          "description" : "Limit results to those whose modification timestamp is earlier than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded.",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -209,7 +209,7 @@
         }, {
           "name" : "creationDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose  creation timestamp later than this timestamp. Default is empty.",
+          "description" : "Limit results to those whose creation timestamp later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded.",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -220,7 +220,7 @@
         }, {
           "name" : "creationDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose creation timestamp is earlier than this timestamp. Default is empty. Date format is YYYY-MM-DD",
+          "description" : "Limit results to those whose creation timestamp is earlier than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded.",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -231,7 +231,7 @@
         }, {
           "name" : "issuedDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose issued timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose issued timestamp later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -242,7 +242,7 @@
         }, {
           "name" : "issuedDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose issued timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose issued timestamp is earlier than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -253,7 +253,7 @@
         }, {
           "name" : "sentDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose sent timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose sent timestamp later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -264,7 +264,7 @@
         }, {
           "name" : "sentDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose sent timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose sent timestamp is earlier than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -275,7 +275,7 @@
         }, {
           "name" : "availableDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose available timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose available timestamp later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -286,7 +286,7 @@
         }, {
           "name" : "availableDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose available timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose available timestamp is earlier than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -297,7 +297,7 @@
         }, {
           "name" : "acquiredDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose acquired timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose acquired timestamp later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -308,7 +308,7 @@
         }, {
           "name" : "acquiredDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose acquired timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose acquired timestamp is earlier than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -349,7 +349,7 @@
         }, {
           "name" : "returnClassificationScheme",
           "in" : "query",
-          "description" : "Whether to return classification scheme or not. Defaults to false. It is assumed that the whole classification scheme is only used when archiving, in normal use classificationCode suffices.\n",
+          "description" : "Whether to return classification scheme or not. Defaults to false. It is assumed that the whole classification scheme is only used when archiving, in normal use classificationCode suffices. NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE\n",
           "required" : false,
           "deprecated" : true,
           "style" : "form",
@@ -474,8 +474,8 @@
     },
     "/api/v1/Records" : {
       "get" : {
-        "summary" : "Return records based on search criteria. Returned cases are sorted by Case.recno, that is, by creation date.\n",
-        "description" : "Note that this operation does not return document contents. This can be fetched by document using GET /api/v1/records/{documentRecno}. By default the set is in ascending order, but parameter reverseSortOrder can be used to change the order to descending.\nThe following sanity checks are conducted on search criteria, breaking these rules will result in 405 return code with description. If effect, the API allow searching records at maximum one year at a time, and is always limited by some contact.\n* at least one contact is required (usually the responsible organization or responsible person)\n* for any date parameter, to and from dates (if both given) may not be further than one year apart\n* for any date parameter, if to date is given alone, it may not be in the future\n",
+        "summary" : "Return records based on search criteria. Returned cases are sorted by Record.recno, that is, by creation date.\n",
+        "description" : "Note that this operation does not return document contents. This can be fetched by document using GET /api/v1/documents/{documentRecno}. By default the set is in ascending order, but parameter reverseSortOrder can be used to change the order to descending.\nThe following sanity checks are conducted on search criteria, breaking these rules will result in 405 return code with description. If effect, the API allow searching records at maximum one year at a time, and is always limited by some contact.\n* at least one ministry or contact is required (usually the responsible organization or responsible person)\n* for any date parameter, to and from dates (if both given) may not be further than one year apart\n* for any date parameter, if to date is given alone, it may not be in the future\n",
         "parameters" : [ {
           "name" : "caseId",
           "in" : "query",
@@ -516,7 +516,7 @@
         }, {
           "name" : "otherId",
           "in" : "query",
-          "description" : "OtherIds of the Case. \n",
+          "description" : "OtherIds of the Record. NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE\n",
           "required" : false,
           "deprecated" : true,
           "style" : "form",
@@ -530,7 +530,7 @@
         }, {
           "name" : "otherIdType",
           "in" : "query",
-          "description" : "OtherId type. Can be EduskuntaTunnus, VahvaRecno or CaseNumber. There need to be exactly as many otherId as there are otherIdType fields. \n",
+          "description" : "OtherId type. Can be EduskuntaTunnus, VahvaRecno or RecordNumber. There need to be exactly as many otherId as there are otherIdType fields. NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE\n",
           "required" : false,
           "deprecated" : true,
           "style" : "form",
@@ -558,7 +558,7 @@
         }, {
           "name" : "subOrganizationOk",
           "in" : "query",
-          "description" : "When searching with organization contacts, if set to true, then we have a hit if record's owning organizaton\nis a suborganization of a contact listed in parameter \"contact\". That is, we can search with LVM\nrecno, and all LVM sub-units would be considered a hit. In effect, this expands the list of contact\nrecnos in search criteria to all sub-organizations. Defaults to false.\n",
+          "description" : "When searching with organization contacts, if set to true, then we have a hit if record's owning organizaton\nis a suborganization of a contact listed in parameter \"contact\". That is, we can search with LVM\nrecno, and all LVM sub-units would be considered a hit. In effect, this expands the list of contact\nrecnos in search criteria to all sub-organizations. Defaults to false. NOT IMPLEMENTED\n",
           "required" : false,
           "deprecated" : true,
           "style" : "form",
@@ -569,7 +569,7 @@
         }, {
           "name" : "recordStatus",
           "in" : "query",
-          "description" : "List of record statuses allowed (according to coded value recordStatus). Results are filtered by given status codes.\nDefaults to empty.\n",
+          "description" : "List of record statuses allowed (according to coded value recordStatus). Results are filtered by given status codes.\nDefaults to empty. Note: eArchive only has records with status Completed (recordStatus = 7)\n",
           "required" : false,
           "deprecated" : true,
           "style" : "form",
@@ -586,7 +586,7 @@
         }, {
           "name" : "modificationDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose modification timestamp is later than this timestamp. Default is empty. Format is YYYY-MM-DD",
+          "description" : "Limit results to those whose modification timestamp is later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded.",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -597,7 +597,7 @@
         }, {
           "name" : "modificationDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose modification timestamp is earlier than this timestamp. Default is empty. Format is YYYY-MM-DD",
+          "description" : "Limit results to those whose modification timestamp is earlier than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded.",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -608,7 +608,7 @@
         }, {
           "name" : "creationDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose  creation timestamp later than this timestamp. Default is empty. Format is YYYY-MM-DD",
+          "description" : "Limit results to those whose creation timestamp later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded.",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -619,7 +619,7 @@
         }, {
           "name" : "creationDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose creation timestamp is earlier than this date. Default is empty. Format is YYYY-MM-DD",
+          "description" : "Limit results to those whose creation timestamp is earlier than this date. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded.",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -630,7 +630,7 @@
         }, {
           "name" : "issuedDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose issued timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose issued timestamp later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -641,7 +641,7 @@
         }, {
           "name" : "issuedDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose issued timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose issued timestamp is earlier than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -652,7 +652,7 @@
         }, {
           "name" : "sentDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose sent timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose sent timestamp later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -663,7 +663,7 @@
         }, {
           "name" : "sentDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose sent timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose sent timestamp is earlier than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -674,7 +674,7 @@
         }, {
           "name" : "availableDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose available timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose available timestamp later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -685,7 +685,7 @@
         }, {
           "name" : "availableDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose available timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose available timestamp is earlier than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -696,7 +696,7 @@
         }, {
           "name" : "acquiredDateFrom",
           "in" : "query",
-          "description" : "Limit results to those whose acquired timestamp later than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose acquired timestamp later than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -707,7 +707,7 @@
         }, {
           "name" : "acquiredDateTo",
           "in" : "query",
-          "description" : "Limit results to those whose acquired timestamp is earlier than this timestamp. Default is empty. NOT IMPLEMENTED",
+          "description" : "Limit results to those whose acquired timestamp is earlier than this timestamp. Default is empty. Date format is \"yyyy-MM-ddThh:mm:sszzz\". The value should be URL encoded. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
