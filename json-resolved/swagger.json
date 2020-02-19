@@ -916,7 +916,7 @@
               "$ref" : "#/components/schemas/Keyword"
             }
           },
-          "created" : {
+          "Created" : {
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -964,11 +964,11 @@
               "format" : "date-time"
             }
           },
-          "caseNumber" : {
+          "CaseNumber" : {
             "type" : "string",
-            "description" : "SÄHKE2 2.3 Identifiointitunnus, VAHVAn asianumero"
+            "description" : "SÄHKE2 2.3 Identifiointitunnus, VAHVAn asianumero (ImportedCaseNumber)"
           },
-          "nativeId" : {
+          "NativeId" : {
             "type" : "string",
             "description" : "SÄHKE2 2.3 Identifiointitunnus, VAHVA case.recno"
           },
@@ -979,14 +979,14 @@
               "$ref" : "#/components/schemas/OtherId"
             }
           },
-          "language" : {
+          "Language" : {
             "type" : "array",
             "description" : "SÄHKE2 2.4 (asian) Kieli",
             "items" : {
               "$ref" : "#/components/schemas/Language"
             }
           },
-          "description" : {
+          "Description" : {
             "type" : "array",
             "items" : {
               "type" : "string",
@@ -1000,10 +1000,10 @@
               "description" : "SÄHKE 2.5.1 (asian) Tiivistelmä"
             }
           },
-          "restriction" : {
+          "Restriction" : {
             "$ref" : "#/components/schemas/RestrictionInfo"
           },
-          "title" : {
+          "Title" : {
             "type" : "string",
             "description" : "SÄHKE2 2.7 Nimike"
           },
@@ -1014,11 +1014,11 @@
               "$ref" : "#/components/schemas/CaseFileRelation"
             }
           },
-          "retentionPeriod" : {
+          "RetentionPeriod" : {
             "type" : "integer",
             "description" : "SÄHKE2 2.11.1 Säilytysajan pituus"
           },
-          "retentionReason" : {
+          "RetentionReason" : {
             "type" : "string",
             "description" : "SÄHKE2 2.11.2 Säilytysajan peruste"
           },
@@ -1026,10 +1026,10 @@
             "type" : "string",
             "description" : "SÄHKE2 2.11.3 Säilytysajan päättymisajankohta"
           },
-          "retentionPeriodCalculationGrounds" : {
+          "RetentionPeriodCalculationGrounds" : {
             "$ref" : "#/components/schemas/RetentionPeriodCalculationGrounds"
           },
-          "status" : {
+          "Status" : {
             "$ref" : "#/components/schemas/CaseStatus"
           },
           "classificationCode" : {
@@ -1039,7 +1039,7 @@
           "classificationScheme" : {
             "$ref" : "#/components/schemas/ClassificationScheme"
           },
-          "function" : {
+          "Function" : {
             "type" : "string",
             "description" : "SÄHKE2 2.13 Tehtävä"
           },
@@ -1061,7 +1061,7 @@
           "electronicNotification" : {
             "$ref" : "#/components/schemas/ElectronicNotification"
           },
-          "action" : {
+          "Action" : {
             "type" : "array",
             "description" : "Asiaan liittyvät toimenpiteet",
             "items" : {
@@ -1090,7 +1090,7 @@
             "description" : "SÄHKE2 5.1.2 Julkistettu pvm (NOT IMPLEMENTED)",
             "format" : "date-time"
           },
-          "created" : {
+          "Created" : {
             "type" : "string",
             "description" : "SÄHKE2 5.1.3 Laadittu pvm",
             "format" : "date-time"
@@ -1102,17 +1102,17 @@
           },
           "modified" : {
             "type" : "string",
-            "description" : "SÄHKE2 5.1.5 Muokattu pvm",
+            "description" : "SÄHKE2 5.1.5 Muokattu pvm (NOT IMPLEMENTED)",
             "format" : "date-time"
           },
           "valid" : {
             "$ref" : "#/components/schemas/TimePeriod"
           },
-          "description" : {
+          "Description" : {
             "type" : "array",
             "items" : {
               "type" : "string",
-              "description" : "SÄHKE 5.2 (toimenpiteen) Kuvaus (NOT IMPLEMENTED)"
+              "description" : "SÄHKE 5.2 (toimenpiteen) Kuvaus"
             }
           },
           "abstract" : {
@@ -1122,7 +1122,7 @@
               "description" : "SÄHKE 2.5.1 (toimenpiteen) Tiivistelmä (NOT IMPLEMENTED)"
             }
           },
-          "title" : {
+          "Title" : {
             "type" : "string",
             "description" : "SÄHKE 5.3 (toimenpiteen) Nimeke"
           },
@@ -1133,24 +1133,24 @@
               "$ref" : "#/components/schemas/CustomMetadata"
             }
           },
-          "agent" : {
+          "Agent" : {
             "type" : "array",
             "description" : "SÄHKE2 5.3 Toimija",
             "items" : {
               "$ref" : "#/components/schemas/Agent"
             }
           },
-          "type" : {
+          "Type" : {
             "$ref" : "#/components/schemas/ActionType"
           },
-          "status" : {
+          "Status" : {
             "$ref" : "#/components/schemas/ActionStatus"
           },
           "systemName" : {
             "type" : "string",
             "description" : "JHS191 6.4 Tietojärjestelmä. The name of the information system used in the action (NOT IMPLEMENTED)"
           },
-          "record" : {
+          "Record" : {
             "type" : "array",
             "description" : "Toimenpiteeseen liittyvät asiakirjat",
             "items" : {
@@ -1435,7 +1435,7 @@
             "format" : "date"
           }
         },
-        "description" : "Ajanjakso"
+        "description" : "Ajanjakso (NOT IMPLEMENTED)"
       },
       "RecordRelation" : {
         "type" : "object",
@@ -1684,18 +1684,18 @@
       "Agent" : {
         "type" : "object",
         "properties" : {
-          "role" : {
+          "Role" : {
             "$ref" : "#/components/schemas/AgentRole"
           },
-          "name" : {
+          "Name" : {
             "type" : "string",
             "description" : "SÄHKE2 2.14.2 Henkilö"
           },
-          "corporateName" : {
+          "CorporateName" : {
             "type" : "string",
             "description" : "SÄHKE2 2.14.3 Yhteisö"
           },
-          "otherId" : {
+          "OtherId" : {
             "$ref" : "#/components/schemas/OtherId"
           }
         },
@@ -1717,7 +1717,8 @@
             "type" : "string",
             "description" : "metadata value"
           }
-        }
+        },
+        "description" : "NOT IMPLEMENTED"
       },
       "PublicityClass" : {
         "type" : "string",
@@ -1735,7 +1736,7 @@
       },
       "SecurityClass" : {
         "type" : "string",
-        "description" : "SÄHKE2 2.6.6 Turvallisuusluokka (Restriction.SecurityClass)\n* Turvallisuusluokka I - TOP SECRET\n* Turvallisuusluokka II - SECRET\n* Turvallisuusluokka III - CONFIDENTIAL\n* Turvallisuusluokka IV - RESTRICTED\n* Ei turvallisuusluokiteltu - NOT CLASSIFIED\n",
+        "description" : "NOT IMPLEMENTED |\nSÄHKE2 2.6.6 Turvallisuusluokka (Restriction.SecurityClass)\n* Turvallisuusluokka I - TOP SECRET\n* Turvallisuusluokka II - SECRET\n* Turvallisuusluokka III - CONFIDENTIAL\n* Turvallisuusluokka IV - RESTRICTED\n* Ei turvallisuusluokiteltu - NOT CLASSIFIED\n",
         "enum" : [ "Turvallisuusluokka I", "Turvallisuusluokka II", "Turvallisuusluokka III", "Turvallisuusluokka IV", "Ei turvallisuusluokiteltu" ]
       },
       "PersonalDataNature" : {
@@ -1763,7 +1764,8 @@
             "type" : "string",
             "description" : "SÄHKE2 2.6.8.3 Sähköinen asiointitunnus"
           }
-        }
+        },
+        "description" : "NOT IMPLEMENTED"
       },
       "AccessRight" : {
         "type" : "object",
@@ -1785,36 +1787,36 @@
       "RestrictionInfo" : {
         "type" : "object",
         "properties" : {
-          "publicityClass" : {
+          "PublicityClass" : {
             "$ref" : "#/components/schemas/PublicityClass"
           },
-          "publicityClassChange" : {
+          "PublicityClassChange" : {
             "$ref" : "#/components/schemas/PublicityClassChange"
           },
-          "securityPeriod" : {
+          "SecurityPeriod" : {
             "type" : "integer",
             "description" : "SÄHKE2 2.6.2 Salassapitoaika"
           },
           "securityPeriodEnd" : {
             "type" : "string",
-            "description" : "SÄHKE2 2.6.3 Salassapidon päättymisajankohta",
+            "description" : "SÄHKE2 2.6.3 Salassapidon päättymisajankohta NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE",
             "format" : "date"
           },
-          "securityReson" : {
+          "SecurityReason" : {
             "type" : "string",
-            "description" : "SÄHKE2 2.6.4 Salasspitoperuste"
+            "description" : "SÄHKE2 2.6.4 Salassapitoperuste"
           },
-          "securityPeriodCalculationGrounds" : {
+          "SecurityPeriodCalculationGrounds" : {
             "type" : "string",
             "description" : "JHS191 5.4 Salassapidon laskentaperuste. Mandatory if not public."
           },
-          "protectionLevel" : {
+          "ProtectionLevel" : {
             "$ref" : "#/components/schemas/ProtectionLevel"
           },
           "securityClass" : {
             "$ref" : "#/components/schemas/SecurityClass"
           },
-          "containsPersonalData" : {
+          "ContainsPersonalData" : {
             "$ref" : "#/components/schemas/PersonalDataNature"
           },
           "persons" : {
@@ -1823,14 +1825,14 @@
               "$ref" : "#/components/schemas/RestrictedPerson"
             }
           },
-          "owners" : {
+          "Owners" : {
             "type" : "array",
             "items" : {
               "type" : "string",
               "description" : "SÄHKE2 2.6.9 Omistaja"
             }
           },
-          "accessRights" : {
+          "AccessRights" : {
             "type" : "array",
             "items" : {
               "$ref" : "#/components/schemas/AccessRight"
