@@ -2,7 +2,7 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "VAHVA eArchive API",
-    "description" : "* Reviewed by team on 23/08/2019\n## Date formats\nDate format is according to SFS-EN 28601 standard, which is very similar to ISO 8601 format. The format is strictly:\n  * **yyyy-MM-ddThh:mm:sszzz**\n  * example: 2019-05-03T12:17:00+03:00\n  \n  When passing date values in URL query string you need to encode the value. **The plus sign in timezone will not work as it will interpreted as space, so you need to encode it to %2B.**\n## Updates\n* Marked unsupported fields as deprecated, will be removed/refined later / Tero Arvola 2020-02-12\n* Updated implementation status, date formats, removed faulty required fields / Tero Arvola 2020-02-18\n* Fixed faulty error codes from 405 to 400 / Tero Arvola 2020-02-19\n* Updated implementation status / Tero Arvola 2020-02-20\n",
+    "description" : "* Reviewed by team on 23/08/2019\n## Date formats\nDate format is according to SFS-EN 28601 standard, which is very similar to ISO 8601 format. The format is strictly:\n  * **yyyy-MM-ddThh:mm:sszzz**\n  * example: 2019-05-03T12:17:00+03:00\n  \n  When passing date values in URL query string you need to encode the value. **The plus sign in timezone will not work as it will interpreted as space, so you need to encode it to %2B.**\n## Updates\n* Marked unsupported fields as deprecated, will be removed/refined later / Tero Arvola 2020-02-12\n* Updated implementation status, date formats, removed faulty required fields / Tero Arvola 2020-02-18\n* Fixed faulty error codes from 405 to 400 / Tero Arvola 2020-02-19\n* Updated implementation status and did minor fixes / Tero Arvola 2020-02-20\n",
     "version" : "1.0.0"
   },
   "servers" : [ {
@@ -1196,15 +1196,13 @@
           },
           "otherId" : {
             "type" : "array",
+            "description" : "NOT IMPLEMENTED",
             "items" : {
               "$ref" : "#/components/schemas/OtherId"
             }
           },
-          "language" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Language"
-            }
+          "Language" : {
+            "$ref" : "#/components/schemas/Language"
           },
           "description" : {
             "type" : "string",
@@ -1221,7 +1219,7 @@
             "type" : "string",
             "description" : "SÄHKE 2.7 (asiakirjan) Nimike"
           },
-          "storageLocation" : {
+          "StorageLocation" : {
             "type" : "string",
             "description" : "SÄHKE2 2.9 (asiakirjan) Sijaintipaikka"
           },
@@ -1239,14 +1237,14 @@
             "type" : "string",
             "description" : "SÄHKE2 2.11.2 Säilytysajan peruste"
           },
-          "retentionPeriodEnd" : {
+          "RetentionPeriodEnd" : {
             "type" : "string",
             "description" : "SÄHKE2 2.11.3 Säilytysajan päättymisajankohta"
           },
-          "retentionPeriodCalculationGrounds" : {
+          "RetentionPeriodCalculationGrounds" : {
             "$ref" : "#/components/schemas/RetentionPeriodCalculationGrounds"
           },
-          "status" : {
+          "Status" : {
             "$ref" : "#/components/schemas/DocumentStatus"
           },
           "Function" : {
@@ -1326,7 +1324,7 @@
             "type" : "string",
             "description" : "SÄHKE2 4.11 Versio"
           },
-          "document" : {
+          "Document" : {
             "type" : "array",
             "description" : "SÄHKE2 6.4.2 Tiedosto",
             "items" : {
@@ -1340,7 +1338,7 @@
               "$ref" : "#/components/schemas/CustomMetadata"
             }
           },
-          "agent" : {
+          "Agent" : {
             "type" : "array",
             "description" : "SÄHKE2 2.14 Toimija",
             "items" : {
@@ -1772,9 +1770,9 @@
             "type" : "integer",
             "description" : "SÄHKE2 2.6.2 Salassapitoaika"
           },
-          "securityPeriodEnd" : {
+          "SecurityPeriodEnd" : {
             "type" : "string",
-            "description" : "SÄHKE2 2.6.3 Salassapidon päättymisajankohta NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE",
+            "description" : "SÄHKE2 2.6.3 Salassapidon päättymisajankohta",
             "format" : "date"
           },
           "SecurityReason" : {
@@ -1788,7 +1786,7 @@
           "ProtectionLevel" : {
             "$ref" : "#/components/schemas/ProtectionLevel"
           },
-          "securityClass" : {
+          "SecurityClass" : {
             "$ref" : "#/components/schemas/SecurityClass"
           },
           "ContainsPersonalData" : {
