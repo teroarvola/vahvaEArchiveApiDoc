@@ -2,7 +2,7 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "VAHVA eArchive API",
-    "description" : "* Reviewed by team on 23/08/2019\n## Date formats\nDate format is according to SFS-EN 28601 standard, which is very similar to ISO 8601 format. The format is strictly:\n  * **yyyy-MM-ddThh:mm:sszzz**\n  * example: 2019-05-03T12:17:00+03:00\n  \n  When passing date values in URL query string you need to encode the value. **The plus sign in timezone will not work as it will interpreted as space, so you need to encode it to %2B.**\n## Updates\n* Marked unsupported fields as deprecated, will be removed/refined later / Tero Arvola 2020-02-12\n* Updated implementation status, date formats, removed faulty required fields / Tero Arvola 2020-02-18\n* Fixed faulty error codes from 405 to 400 / Tero Arvola 2020-02-19\n",
+    "description" : "* Reviewed by team on 23/08/2019\n## Date formats\nDate format is according to SFS-EN 28601 standard, which is very similar to ISO 8601 format. The format is strictly:\n  * **yyyy-MM-ddThh:mm:sszzz**\n  * example: 2019-05-03T12:17:00+03:00\n  \n  When passing date values in URL query string you need to encode the value. **The plus sign in timezone will not work as it will interpreted as space, so you need to encode it to %2B.**\n## Updates\n* Marked unsupported fields as deprecated, will be removed/refined later / Tero Arvola 2020-02-12\n* Updated implementation status, date formats, removed faulty required fields / Tero Arvola 2020-02-18\n* Fixed faulty error codes from 405 to 400 / Tero Arvola 2020-02-19\n* Updated implementation status / Tero Arvola 2020-02-20\n",
     "version" : "1.0.0"
   },
   "servers" : [ {
@@ -917,20 +917,14 @@
             }
           },
           "Created" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "SÄHKE2 2.2.1 (asian) Avattu/laadittu pvm",
-              "format" : "date-time"
-            }
+            "type" : "string",
+            "description" : "SÄHKE2 2.2.1 (asian) Avattu/laadittu pvm",
+            "format" : "date-time"
           },
           "issued" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "SÄHKE2 2.2.2 (asian) Julkistettu pvm (NOT IMPLEMENTED)",
-              "format" : "date-time"
-            }
+            "type" : "string",
+            "description" : "SÄHKE2 2.2.2 (asian) Julkistettu pvm (NOT IMPLEMENTED)",
+            "format" : "date-time"
           },
           "sent" : {
             "type" : "array",
@@ -940,13 +934,10 @@
               "format" : "date-time"
             }
           },
-          "modified" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "SÄHKE2 2.2.4 (asian) Muokattu pvm",
-              "format" : "date-time"
-            }
+          "Modified" : {
+            "type" : "string",
+            "description" : "SÄHKE2 2.2.4 (asian) Muokattu pvm",
+            "format" : "date-time"
           },
           "available" : {
             "type" : "array",
@@ -974,7 +965,7 @@
           },
           "otherId" : {
             "type" : "array",
-            "description" : "Asian tunnisteet muissa järjestelmissä",
+            "description" : "Asian tunnisteet muissa järjestelmissä (NOT IMPLEMENTED)",
             "items" : {
               "$ref" : "#/components/schemas/OtherId"
             }
@@ -997,7 +988,7 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "description" : "SÄHKE 2.5.1 (asian) Tiivistelmä"
+              "description" : "SÄHKE 2.5.1 (asian) Tiivistelmä (NOT IMPLEMENTED)"
             }
           },
           "Restriction" : {
@@ -1024,7 +1015,7 @@
           },
           "retentionPeriodEnd" : {
             "type" : "string",
-            "description" : "SÄHKE2 2.11.3 Säilytysajan päättymisajankohta"
+            "description" : "SÄHKE2 2.11.3 Säilytysajan päättymisajankohta (NOT IMPLEMENTED)"
           },
           "RetentionPeriodCalculationGrounds" : {
             "$ref" : "#/components/schemas/RetentionPeriodCalculationGrounds"
@@ -1043,7 +1034,7 @@
             "type" : "string",
             "description" : "SÄHKE2 2.13 Tehtävä"
           },
-          "agent" : {
+          "Agent" : {
             "type" : "array",
             "description" : "SÄHKE2 2.14 Toimija",
             "items" : {
@@ -1169,55 +1160,37 @@
               "$ref" : "#/components/schemas/Keyword"
             }
           },
-          "created" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "SÄHKE 2.2.1 (asiakirjan) Avattu/laadittu pvm",
-              "format" : "date-time"
-            }
+          "Created" : {
+            "type" : "string",
+            "description" : "SÄHKE 2.2.1 (asiakirjan) Avattu/laadittu pvm",
+            "format" : "date-time"
           },
           "issued" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "SÄHKE 2.2.2 (asiakirjan) Julkistettu pvm (NOT IMPLEMENTED)",
-              "format" : "date-time"
-            }
+            "type" : "string",
+            "description" : "SÄHKE 2.2.2 (asiakirjan) Julkistettu pvm (NOT IMPLEMENTED)",
+            "format" : "date-time"
           },
           "sent" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "SÄHKE 2.2.3 (asiakirjan) Lähetetty pvm (NOT IMPLEMENTED)",
-              "format" : "date-time"
-            }
+            "type" : "string",
+            "description" : "SÄHKE 2.2.3 (asiakirjan) Lähetetty pvm (NOT IMPLEMENTED)",
+            "format" : "date-time"
           },
-          "modified" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "SÄHKE 2.2.4 (asiakirjan) Muokattu pvm",
-              "format" : "date-time"
-            }
+          "Modified" : {
+            "type" : "string",
+            "description" : "SÄHKE 2.2.4 (asiakirjan) Muokattu pvm",
+            "format" : "date-time"
           },
           "available" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "SÄHKE 2.2.5 (asiakirjan) Saatavilla pvm (NOT IMPLEMENTED)",
-              "format" : "date-time"
-            }
+            "type" : "string",
+            "description" : "SÄHKE 2.2.5 (asiakirjan) Saatavilla pvm (NOT IMPLEMENTED)",
+            "format" : "date-time"
           },
           "acquired" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "SÄHKE 2.2.5 (asiakirjan) Vastaanotettu pvm (NOT IMPLEMENTED)",
-              "format" : "date-time"
-            }
+            "type" : "string",
+            "description" : "SÄHKE 2.2.5 (asiakirjan) Vastaanotettu pvm (NOT IMPLEMENTED)",
+            "format" : "date-time"
           },
-          "nativeId" : {
+          "NativeId" : {
             "type" : "string",
             "description" : "SÄHKE 2.3 (asiakirjan) Identifiointitunnus, VAHVA document.recno"
           },
@@ -1234,23 +1207,17 @@
             }
           },
           "description" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "SÄHKE 2.5 (asiakirjan) Kuvaus (NOT IMPLEMENTED)"
-            }
+            "type" : "string",
+            "description" : "SÄHKE 2.5 (asiakirjan) Kuvaus (NOT IMPLEMENTED)"
           },
           "abstract" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "description" : "SÄHKE 2.5.1 (asiakirjan) Tiivistelmä (NOT IMPLEMENTED)"
-            }
+            "type" : "string",
+            "description" : "SÄHKE 2.5.1 (asiakirjan) Tiivistelmä (NOT IMPLEMENTED)"
           },
-          "restriction" : {
+          "Restriction" : {
             "$ref" : "#/components/schemas/RestrictionInfo"
           },
-          "title" : {
+          "Title" : {
             "type" : "string",
             "description" : "SÄHKE 2.7 (asiakirjan) Nimike"
           },
@@ -1264,11 +1231,11 @@
               "$ref" : "#/components/schemas/RecordRelation"
             }
           },
-          "retentionPeriod" : {
+          "RetentionPeriod" : {
             "type" : "integer",
             "description" : "SÄHKE2 2.11.1 Säilytysajan pituus"
           },
-          "retentionReason" : {
+          "RetentionReason" : {
             "type" : "string",
             "description" : "SÄHKE2 2.11.2 Säilytysajan peruste"
           },
@@ -1282,11 +1249,19 @@
           "status" : {
             "$ref" : "#/components/schemas/DocumentStatus"
           },
-          "function" : {
+          "Function" : {
             "type" : "string",
-            "description" : "SÄHKE2 2.13 Tehtävä"
+            "description" : "SÄHKE2 2.13 Tehtävä. Deprecated, use FunctionCode instead.",
+            "deprecated" : true
           },
-          "type" : {
+          "FunctionCode" : {
+            "allOf" : [ {
+              "description" : "SÄHKE2 2.13 Tehtävä. $ref: #/components/schemas/FunctionCode"
+            }, {
+              "$ref" : "#/components/schemas/FunctionCode"
+            } ]
+          },
+          "Type" : {
             "$ref" : "#/components/schemas/DocumentType"
           },
           "accepted" : {
@@ -1583,7 +1558,7 @@
             "example" : "FIN"
           }
         },
-        "description" : "Keyword object"
+        "description" : "Keyword object (NOT IMPLEMENTED - NOT AVAILABLE IN EARCHIVE)"
       },
       "ElectronicNotification" : {
         "type" : "object",
@@ -1895,7 +1870,7 @@
       },
       "CaseType" : {
         "type" : "string",
-        "description" : "SÄHKE2 2.15 (asian) Tyyppi. Koodiston \"caseType\" mukainen kooditus TODO selvitä oikea koodaus esimerkkiin\n"
+        "description" : "SÄHKE2 2.15 (asian) Tyyppi. Koodiston \"caseType\" mukainen kooditus TODO selvitä oikea koodaus esimerkkiin (NOT IMPLEMENTED)\n"
       },
       "AgentRole" : {
         "type" : "string",
