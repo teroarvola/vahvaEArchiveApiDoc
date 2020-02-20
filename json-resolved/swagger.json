@@ -1310,19 +1310,19 @@
             "type" : "array",
             "items" : {
               "type" : "string",
-              "description" : "SÄHKE2 4.9 Suojeluluokka"
+              "description" : "SÄHKE2 4.9 Suojeluluokka (NOT IMPLEMENTED)"
             }
           },
           "alternativeTitle" : {
             "type" : "array",
             "items" : {
               "type" : "string",
-              "description" : "SÄHKE2 4.10 Vaihtoehtoinen nimike"
+              "description" : "SÄHKE2 4.10 Vaihtoehtoinen nimike (NOT IMPLEMENTED)"
             }
           },
           "version" : {
             "type" : "string",
-            "description" : "SÄHKE2 4.11 Versio"
+            "description" : "SÄHKE2 4.11 Versio (NOT IMPLEMENTED)"
           },
           "Document" : {
             "type" : "array",
@@ -1333,7 +1333,7 @@
           },
           "custom" : {
             "type" : "array",
-            "description" : "SÄHKE2 2.8 (asiakirjan) Organisaatiokohtaiset metatiedot",
+            "description" : "SÄHKE2 2.8 (asiakirjan) Organisaatiokohtaiset metatiedot (NOT IMPLEMENTED)",
             "items" : {
               "$ref" : "#/components/schemas/CustomMetadata"
             }
@@ -1392,7 +1392,7 @@
             "description" : "SÄHKE2 4.2.3 Kuvaus"
           }
         },
-        "description" : "SÄHKE2 4.2 Asiakirjan alkuperäisyys ja eheys todettu"
+        "description" : "SÄHKE2 4.2 Asiakirjan alkuperäisyys ja eheys todettu (NOT IMPLEMENTED)"
       },
       "TimePeriod" : {
         "type" : "object",
