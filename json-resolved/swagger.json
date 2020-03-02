@@ -2,7 +2,7 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "VAHVA eArchive API",
-    "description" : "* Reviewed by team on 23/08/2019\n## Date formats\nDate format is according to SFS-EN 28601 standard, which is very similar to ISO 8601 format. The format is strictly:\n  * **yyyy-MM-ddThh:mm:sszzz**\n  * example: 2019-05-03T12:17:00+03:00\n  \n  When passing date values in URL query string you need to encode the value. **The plus sign in timezone will not work as it will interpreted as space, so you need to encode it to %2B.**\n## Updates\n* Marked unsupported fields as deprecated, will be removed/refined later / Tero Arvola 2020-02-12\n* Updated implementation status, date formats, removed faulty required fields / Tero Arvola 2020-02-18\n* Fixed faulty error codes from 405 to 400 / Tero Arvola 2020-02-19\n* Updated implementation status and did minor fixes / Tero Arvola 2020-02-20\n",
+    "description" : "* Reviewed by team on 23/08/2019\n## Date formats\nDate format is according to SFS-EN 28601 standard, which is very similar to ISO 8601 format. The format is strictly:\n  * **yyyy-MM-ddThh:mm:sszzz**\n  * example: 2019-05-03T12:17:00+03:00\n  \n  When passing date values in URL query string you need to encode the value. **The plus sign in timezone will not work as it will interpreted as space, so you need to encode it to %2B.**\n## Updates\n* Marked unsupported fields as deprecated, will be removed/refined later / Tero Arvola 2020-02-12\n* Updated implementation status, date formats, removed faulty required fields / Tero Arvola 2020-02-18\n* Fixed faulty error codes from 405 to 400 / Tero Arvola 2020-02-19\n* Updated implementation status and did minor fixes / Tero Arvola 2020-02-20\n* Fixed Cases and Records query parameters descriptions / Tero Arvola 2020-03-02\n",
     "version" : "1.0.0"
   },
   "servers" : [ {
@@ -75,11 +75,31 @@
     "/api/v1/Cases" : {
       "get" : {
         "summary" : "Return cases based on search criteria. \n",
-        "description" : "Note that this operation ONLY RETURNS CASE INFORMATION - no tasks, records or documents are returned to ensure proper performance. Further information can then be fetched by case using GET /api/v1/cases/{caseRecno}. Results are always returned in recno order, that is, by creation timestamp. By default the set is in ascending order, but parameter reverseSortOrder can be used to change the order to descending.\nThe following sanity checks are conducted on search criteria, breaking these rules will result in 400 return code with description. If effect, the API allow searching cases at maximum one year at a time, and is always limited by some contact.\n* at least CaseNumber, Contact (usually the responsible organization or responsible person) or Ministry is required\n* for any date parameter, to and from dates (if both given) may not be further than one year apart\n* for any date parameter, if to date is given alone, it may not be in the future\n",
+        "description" : "Note that this operation ONLY RETURNS CASE INFORMATION - no tasks, records or documents are returned to ensure proper performance. Further information can then be fetched by case using GET /api/v1/cases/{caseRecno}. Results are always returned in recno order, that is, by creation timestamp. By default the set is in ascending order, but parameter reverseSortOrder can be used to change the order to descending.\nThe following sanity checks are conducted on search criteria, breaking these rules will result in 400 return code with description. If effect, the API allow searching cases at maximum one year at a time, and is always limited by some search criteria.\n* at least CaseNumber or Ministry is required\n* for any date parameter, to and from dates (if both given) may not be further than one year apart\n* for any date parameter, if to date is given alone, it may not be in the future\n",
         "parameters" : [ {
           "name" : "title",
           "in" : "query",
           "description" : "Case.Description. Returns results that match the case description. Use '%' as wildcard. Default is empty. If given, needs to be at least 3 characters long.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "ministry",
+          "in" : "query",
+          "description" : "Ministry abbreviation to search on. Results are filtered by given ministry. Defaults to empty. Either contact or ministry must be provided.\n",
+          "required" : false,
+          "style" : "form",
+          "explode" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "name" : "caseNumber",
+          "in" : "query",
+          "description" : "Case number of the case (ImportedCaseNumber).\n",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -475,7 +495,7 @@
     "/api/v1/Records" : {
       "get" : {
         "summary" : "Return records based on search criteria. Returned cases are sorted by Record.recno, that is, by creation date.\n",
-        "description" : "Note that this operation does not return document contents. This can be fetched by document using GET /api/v1/documents/{documentRecno}. By default the set is in ascending order, but parameter reverseSortOrder can be used to change the order to descending.\nThe following sanity checks are conducted on search criteria, breaking these rules will result in 400 return code with description. If effect, the API allow searching records at maximum one year at a time, and is always limited by some contact.\n* at least one ministry or contact is required (usually the responsible organization or responsible person)\n* for any date parameter, to and from dates (if both given) may not be further than one year apart\n* for any date parameter, if to date is given alone, it may not be in the future\n",
+        "description" : "Note that this operation does not return document contents. This can be fetched by document using GET /api/v1/documents/{documentRecno}. By default the set is in ascending order, but parameter reverseSortOrder can be used to change the order to descending.\nThe following sanity checks are conducted on search criteria, breaking these rules will result in 400 return code with description. If effect, the API allow searching records at maximum one year at a time, and is always limited by some search criteria.\n* at least Ministry or CaseId is required\n* for any date parameter, to and from dates (if both given) may not be further than one year apart\n* for any date parameter, if to date is given alone, it may not be in the future\n",
         "parameters" : [ {
           "name" : "caseId",
           "in" : "query",
