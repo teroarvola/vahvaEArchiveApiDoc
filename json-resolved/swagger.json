@@ -2,7 +2,7 @@
   "openapi" : "3.0.0",
   "info" : {
     "title" : "VAHVA eArchive API",
-    "description" : "* Reviewed by team on 23/08/2019\n## Date formats\nDate format is according to SFS-EN 28601 standard, which is very similar to ISO 8601 format. The format is strictly:\n  * **yyyy-MM-ddThh:mm:sszzz**\n  * example: 2019-05-03T12:17:00+03:00\n  \n  When passing date values in URL query string you need to encode the value. **The plus sign in timezone will not work as it will interpreted as space, so you need to encode it to %2B.**\n## Updates\n* Marked unsupported fields as deprecated, will be removed/refined later / Tero Arvola 2020-02-12\n* Updated implementation status, date formats, removed faulty required fields / Tero Arvola 2020-02-18\n* Fixed faulty error codes from 405 to 400 / Tero Arvola 2020-02-19\n* Updated implementation status and did minor fixes / Tero Arvola 2020-02-20\n* Fixed Cases and Records query parameters descriptions / Tero Arvola 2020-03-02\n",
+    "description" : "* Reviewed by team on 23/08/2019\n## Date formats\nDate format is according to SFS-EN 28601 standard, which is very similar to ISO 8601 format. The format is strictly:\n  * **yyyy-MM-ddThh:mm:sszzz**\n  * example: 2019-05-03T12:17:00+03:00\n  \n  When passing date values in URL query string you need to encode the value. **The plus sign in timezone will not work as it will interpreted as space, so you need to encode it to %2B.**\n## Updates\n* Marked unsupported fields as deprecated, will be removed/refined later / Tero Arvola 2020-02-12\n* Updated implementation status, date formats, removed faulty required fields / Tero Arvola 2020-02-18\n* Fixed faulty error codes from 405 to 400 / Tero Arvola 2020-02-19\n* Updated implementation status and did minor fixes / Tero Arvola 2020-02-20\n* Fixed Cases and Records query parameters descriptions / Tero Arvola 2020-03-02\n* Fixed RestrictionInfo.Owners format / Tero Arvola 2020-04-09\n",
     "version" : "1.0.0"
   },
   "servers" : [ {
@@ -1820,9 +1820,9 @@
           },
           "Owners" : {
             "type" : "array",
+            "description" : "SÄHKE2 2.6.9 Omistaja",
             "items" : {
-              "type" : "string",
-              "description" : "SÄHKE2 2.6.9 Omistaja"
+              "$ref" : "#/components/schemas/RestrictionInfo_Owners"
             }
           },
           "AccessRights" : {
@@ -1905,6 +1905,15 @@
             "items" : {
               "$ref" : "#/components/schemas/SubFunction"
             }
+          }
+        }
+      },
+      "RestrictionInfo_Owners" : {
+        "type" : "object",
+        "properties" : {
+          "OwnerRecno" : {
+            "type" : "string",
+            "description" : "Contact recno of the owner"
           }
         }
       }
