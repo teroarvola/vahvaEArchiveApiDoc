@@ -48,7 +48,7 @@
         }, {
           "name" : "includeRecords",
           "in" : "query",
-          "description" : "Whether to include simple Record list in results. Defaults to true.",
+          "description" : "Whether to include simple Record list in results. Defaults to true. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -58,7 +58,7 @@
         }, {
           "name" : "includeActionDetails",
           "in" : "query",
-          "description" : "Whether to include Action and Record details in results. Defaults to true.",
+          "description" : "Whether to include Action and Record details in results. Defaults to true. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -379,7 +379,7 @@
         }, {
           "name" : "includeRecords",
           "in" : "query",
-          "description" : "Whether to include simple Record list in results. Defaults to false.",
+          "description" : "Whether to include simple Record list in results. Defaults to false. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
@@ -389,7 +389,7 @@
         }, {
           "name" : "includeActionDetails",
           "in" : "query",
-          "description" : "Whether to include Action and Record details in results. Defaults to false.",
+          "description" : "Whether to include Action and Record details in results. Defaults to false. NOT IMPLEMENTED",
           "required" : false,
           "style" : "form",
           "explode" : true,
